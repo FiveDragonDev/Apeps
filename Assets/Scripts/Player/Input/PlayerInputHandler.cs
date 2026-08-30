@@ -9,17 +9,21 @@ namespace Assets.Scripts.Player.Input
     {
         public IMovementInput Movement => _movement;
         public ICameraInput Camera => _camera;
+        public IInteractionInput Interaction => _interaction;
 
         [SerializeField] private MovementActions _movementActions = new();
         [Space, SerializeField] private CameraActions _cameraActions = new();
+        [Space, SerializeField] private InteractionActions _interactionActions = new();
 
         private readonly MovementInput _movement = new();
         private readonly CameraInput _camera = new();
+        private readonly InteractionInput _interaction = new();
 
         private InputValueBinding<Vector2> _move;
         private InputHoldBinding _sprint;
         private InputPressBinding _jump;
         private InputValueBinding<Vector2> _look;
+        private InputPressBinding _interact;
 
         private void Awake()
         {
@@ -28,6 +32,8 @@ namespace Assets.Scripts.Player.Input
             _jump = new(_movementActions.Jump, _movement.RaiseJump);
 
             _look = new(_cameraActions.Look, _camera.SetLook, Vector2.zero);
+
+            _interact = new(_interactionActions.Interact, _interaction.RaiseInteract);
         }
         private void OnEnable()
         {
@@ -35,6 +41,7 @@ namespace Assets.Scripts.Player.Input
             _sprint?.Enable();
             _jump?.Enable();
             _look?.Enable();
+            _interact?.Enable();
         }
         private void OnDisable()
         {
@@ -42,6 +49,7 @@ namespace Assets.Scripts.Player.Input
             _sprint?.Disable();
             _jump?.Disable();
             _look?.Disable();
+            _interact?.Disable();
         }
     }
 }

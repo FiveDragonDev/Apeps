@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Player.Movement.Sensors;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,7 +42,7 @@ namespace Assets.Scripts.Player.Movement.StateMachine
     {
         private bool _jumpRequested;
 
-        public override void Setup() => AddTransitionTo<AirborneState>(ctx => !ctx.Sensor.IsOnSurface);
+        public override void Setup() => AddTransitionTo<AirborneState>(ctx => !ctx.Sensor.IsOnSurface || ctx.Sensor.IsOnTooSteepSlope(Context.Config.SlopeAngle));
         public override void Enter() => Context.Input.Jump += OnJump;
         public override void FixedUpdate(float deltaTime)
         {
@@ -52,10 +53,17 @@ namespace Assets.Scripts.Player.Movement.StateMachine
 
             Vector3 forward = Context.Motor.Forward * move.y;
             Vector3 right = Context.Motor.Right * move.x;
+            var direction = (forward + right).normalized;
+            var targetHorizontalVelocity = direction * speed;
 
-            var velocity = (forward + right).normalized * speed;
-
-            Context.Motor.AccelerateHorizontal(velocity, Context.Config.GroundedAcceleration, deltaTime);
+            var groundNormal = Context.Sensor.GroundNormal;
+            if (groundNormal.y > 0.001f)
+            {
+                float verticalVelocity = -Vector3.Dot(targetHorizontalVelocity, groundNormal) / groundNormal.y;
+                var targetVelocity = targetHorizontalVelocity + Vector3.up * verticalVelocity;
+                Context.Motor.Accelerate(targetVelocity, Context.Config.GroundedAcceleration, deltaTime);
+            }
+            else Context.Motor.AccelerateHorizontal(targetHorizontalVelocity, Context.Config.GroundedAcceleration, deltaTime);
 
             if (_jumpRequested)
             {
@@ -71,6 +79,38 @@ namespace Assets.Scripts.Player.Movement.StateMachine
 
     public sealed class AirborneState : PlayerMovementState
     {
-        public override void Setup() => AddTransitionTo<GroundedState>(ctx => ctx.Sensor.IsOnSurface);
+        public override void Setup() => AddTransitionTo<GroundedState>(ctx => ctx.Sensor.IsOnSurface && !ctx.Sensor.IsOnTooSteepSlope(Context.Config.SlopeAngle));
+        public override void FixedUpdate(float deltaTime)
+        {
+            Vector3 currentVelocity = Context.Motor.Velocity;
+            currentVelocity.y += Context.Config.Gravity * deltaTime;
+
+            currentVelocity.y = Mathf.Max(currentVelocity.y, -Context.Config.MaxFallSpeed);
+            Context.Motor.Velocity = currentVelocity;
+
+            var move = Context.Input.Move;
+            var sprint = Context.Input.Sprint;
+            var speed = sprint ? Context.Config.SprintSpeed : Context.Config.WalkSpeed;
+
+            Vector3 forward = Context.Motor.Forward * move.y;
+            Vector3 right = Context.Motor.Right * move.x;
+            var direction = (forward + right).normalized;
+
+            var targetHorizontalVelocity = Context.Config.AirControl * speed * direction;
+
+            if (Context.Sensor.IsOnTooSteepSlope(Context.Config.SlopeAngle))
+            {
+                Vector3 slideDirection = Vector3.ProjectOnPlane(Vector3.down, Context.Sensor.GroundNormal).normalized;
+                Vector3 slideTarget = slideDirection * Context.Config.SlideSpeed;
+
+                var currentHorizontal = Context.Motor.HorizontalVelocity;
+                var newHorizontal = Vector3.MoveTowards(currentHorizontal, slideTarget, Context.Config.SlideAcceleration * deltaTime);
+                Context.Motor.HorizontalVelocity = newHorizontal;
+                return;
+            }
+
+            float airAcceleration = Context.Config.AirControl * Context.Config.AirAcceleration;
+            Context.Motor.AccelerateHorizontal(targetHorizontalVelocity, airAcceleration, deltaTime);
+        }
     }
 }

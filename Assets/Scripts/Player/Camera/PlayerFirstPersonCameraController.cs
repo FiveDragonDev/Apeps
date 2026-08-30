@@ -16,10 +16,9 @@ namespace Assets.Scripts.Player.Camera
 
         [Space]
         [Header("References")]
-        [SerializeField] private Transform _bodyTransform;
+        [SerializeField] private PlayerBody _body;
 
         private ICameraInput _input;
-        private Rigidbody _bodyRigidbody;
 
         private Vector2 _targetRotation;
         private Vector2 _currentRotation;
@@ -27,22 +26,9 @@ namespace Assets.Scripts.Player.Camera
 
         private void Awake()
         {
-            if (_bodyTransform == null && transform.parent != null) _bodyTransform = transform.parent;
+            if (_body == null) Debug.LogError("Body transform is not assigned", this);
 
-            if (_bodyTransform != null)
-            {
-                _bodyRigidbody = _bodyTransform.GetComponent<Rigidbody>();
-                if (_bodyRigidbody == null)
-                {
-                    Debug.LogError("No Rigidbody found on body transform.", this);
-                }
-            }
-            else
-            {
-                Debug.LogError("Body transform is not assigned and no parent found.", this);
-            }
-
-            var initialYaw = _bodyTransform != null ? _bodyTransform.eulerAngles.y : 0;
+            var initialYaw = _body != null ? _body.Yaw : 0;
             var initialPitch = transform.localEulerAngles.x;
             if (initialPitch > 180) initialPitch -= 360;
 
@@ -59,25 +45,24 @@ namespace Assets.Scripts.Player.Camera
         {
             if (_input == null) return;
 
-            var lookDelta = _mouseSensitivity * Time.unscaledDeltaTime * _input.Look;
+            var lookDelta = _mouseSensitivity * _input.Look;
 
             _targetRotation.x += lookDelta.x;
-            _targetRotation.y -= lookDelta.y;
-            _targetRotation.y = Mathf.Clamp(_targetRotation.y, _minPitch, _maxPitch);
+            _targetRotation.y = Mathf.Clamp(_targetRotation.y - lookDelta.y, _minPitch, _maxPitch);
         }
         private void LateUpdate()
         {
-            if (_bodyRigidbody == null) return;
+            if (_body == null) return;
 
             var smoothYaw = Mathf.SmoothDampAngle(_currentRotation.x, _targetRotation.x, ref _rotationVelocity.x, _smoothTime);
             var smoothPitch = Mathf.SmoothDampAngle(_currentRotation.y, _targetRotation.y, ref _rotationVelocity.y, _smoothTime);
 
             _currentRotation = new(smoothYaw, smoothPitch);
 
-            _bodyRigidbody.MoveRotation(Quaternion.Euler(0, smoothYaw, 0));
+            _body.SetYaw(smoothYaw);
             transform.localRotation = Quaternion.Euler(smoothPitch, 0, 0);
         }
 
-        public void TryInitialize(ICameraInput input) => _input = input;
+        public void Initialize(ICameraInput input) => _input = input;
     }
 }

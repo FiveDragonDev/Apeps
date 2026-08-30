@@ -20,17 +20,17 @@ namespace Assets.Scripts.Player.Movement
 
         private bool _initialized;
 
-        private void Start() => TryInitializeInternal();
+        private void Start() => InitializeInternal();
         private void Update() => _locomotion.Update(Time.deltaTime);
         private void FixedUpdate() => _locomotion.FixedUpdate(Time.fixedDeltaTime);
 
-        public void TryInitialize(IMovementInput movementInput)
+        public void Initialize(IMovementInput movementInput)
         {
             _input = movementInput;
-            TryInitializeInternal();
+            InitializeInternal();
         }
 
-        private void TryInitializeInternal()
+        private void InitializeInternal()
         {
             if (_initialized || _input == null) return;
             _motor = new(GetComponent<Rigidbody>());
