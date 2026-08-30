@@ -3,12 +3,12 @@ using UnityEngine.InputSystem;
 
 namespace Assets.Scripts.Player.Input.Internal
 {
-    public sealed class InputButtonBinding
+    public sealed class InputHoldBinding
     {
         private readonly InputAction _action;
         private readonly Action<bool> _onChanged;
 
-        public InputButtonBinding(InputAction action, Action<bool> onChanged)
+        public InputHoldBinding(InputAction action, Action<bool> onChanged)
         {
             _action = action;
             _onChanged = onChanged;
