@@ -40,20 +40,25 @@ namespace Assets.Scripts.Player.Movement.StateMachine
 
     public sealed class GroundedState : PlayerMovementState
     {
+        private Vector2 _move;
+        private bool _sprint;
+
         private bool _jumpRequested;
 
         public override void Setup() => AddTransitionTo<AirborneState>(ctx => !ctx.Sensor.IsOnSurface || ctx.Sensor.IsOnTooSteepSlope(Context.Config.SlopeAngle));
         public override void Enter() => Context.Input.Jump += OnJump;
+        public override void Update(float deltaTime)
+        {
+            _move = Context.Input.Move;
+            _sprint = Context.Input.Sprint;
+        }
         public override void FixedUpdate(float deltaTime)
         {
-            var move = Context.Input.Move;
-            var sprint = Context.Input.Sprint;
+            var speed = _sprint ? Context.Config.SprintSpeed : Context.Config.WalkSpeed;
 
-            var speed = sprint ? Context.Config.SprintSpeed : Context.Config.WalkSpeed;
-
-            Vector3 forward = Context.Motor.Forward * move.y;
-            Vector3 right = Context.Motor.Right * move.x;
-            var direction = (forward + right).normalized;
+            Vector3 forward = Context.Motor.Forward * _move.y;
+            Vector3 right = Context.Motor.Right * _move.x;
+            var direction = Vector3.ClampMagnitude(forward + right, 1f);
             var targetHorizontalVelocity = direction * speed;
 
             var groundNormal = Context.Sensor.GroundNormal;
@@ -79,7 +84,15 @@ namespace Assets.Scripts.Player.Movement.StateMachine
 
     public sealed class AirborneState : PlayerMovementState
     {
+        private Vector2 _move;
+        private bool _sprint;
+
         public override void Setup() => AddTransitionTo<GroundedState>(ctx => ctx.Sensor.IsOnSurface && !ctx.Sensor.IsOnTooSteepSlope(Context.Config.SlopeAngle));
+        public override void Update(float deltaTime)
+        {
+            _move = Context.Input.Move;
+            _sprint = Context.Input.Sprint;
+        }
         public override void FixedUpdate(float deltaTime)
         {
             Vector3 currentVelocity = Context.Motor.Velocity;
@@ -88,13 +101,11 @@ namespace Assets.Scripts.Player.Movement.StateMachine
             currentVelocity.y = Mathf.Max(currentVelocity.y, -Context.Config.MaxFallSpeed);
             Context.Motor.Velocity = currentVelocity;
 
-            var move = Context.Input.Move;
-            var sprint = Context.Input.Sprint;
-            var speed = sprint ? Context.Config.SprintSpeed : Context.Config.WalkSpeed;
+            var speed = _sprint ? Context.Config.SprintSpeed : Context.Config.WalkSpeed;
 
-            Vector3 forward = Context.Motor.Forward * move.y;
-            Vector3 right = Context.Motor.Right * move.x;
-            var direction = (forward + right).normalized;
+            Vector3 forward = Context.Motor.Forward * _move.y;
+            Vector3 right = Context.Motor.Right * _move.x;
+            var direction = Vector3.ClampMagnitude(forward + right, 1f);
 
             var targetHorizontalVelocity = Context.Config.AirControl * speed * direction;
 
