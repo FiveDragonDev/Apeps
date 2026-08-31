@@ -1046,8 +1046,8 @@ MonoBehaviour:
   _interactionLayer:
     serializedVersion: 2
     m_Bits: 1
-  _maxInteractionDistance: 1.5
-  _interactionRadius: 0.34
+  _maxInteractionDistance: 2
+  _interactionRadius: 0.4
   _sender: {fileID: 1054419756}
 --- !u!114 &969978461
 MonoBehaviour:
