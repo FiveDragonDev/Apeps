@@ -7,9 +7,10 @@ namespace Assets.Scripts.Player.Interaction
 {
     public sealed class PlayerInteractionController : MonoBehaviour
     {
-        public event Action<IInteractable> OnHoverStarted;
-        public event Action OnHoverEnded;
-        public event Action<IInteractable> OnInteracted;
+        public event Action<IInteractable> HoverStarted;
+        public event Action<IInteractable, IInteractable> HoverChanged;
+        public event Action HoverEnded;
+        public event Action<IInteractable> Interacted;
 
         [SerializeField] private LayerMask _interactionLayer = ~0;
         [SerializeField, Min(0)] private float _maxInteractionDistance = 1;
@@ -20,7 +21,6 @@ namespace Assets.Scripts.Player.Interaction
         private IInteractionInput _input;
 
         private Collider _currentCollider;
-        private Collider _previousCollider;
         private IInteractable _currentInteractable;
 
         private bool _initialized;
@@ -50,23 +50,21 @@ namespace Assets.Scripts.Player.Interaction
             if (_currentInteractable == null) return;
 
             _currentInteractable.Interact();
-            OnInteracted?.Invoke(_currentInteractable);
+            Interacted?.Invoke(_currentInteractable);
         }
 
         private void HandleInteraction()
         {
-            bool found = TryGetInteractable(out var hitCollider, out var interactable);
-
-            if (found)
+            if (TryGetInteractable(out var hitCollider, out var interactable))
             {
-                if (_currentCollider != hitCollider)
-                {
-                    _previousCollider = _currentCollider;
-                    _currentCollider = hitCollider;
-                    _currentInteractable = interactable;
+                var previous = _currentInteractable;
+                var previousCollider = _currentCollider;
 
-                    OnHoverStarted?.Invoke(interactable);
-                }
+                _currentCollider = hitCollider;
+                _currentInteractable = interactable;
+
+                if (previous == null) HoverStarted?.Invoke(interactable);
+                else if (previousCollider != hitCollider) HoverChanged?.Invoke(previous, interactable);
             }
             else
             {
@@ -74,11 +72,9 @@ namespace Assets.Scripts.Player.Interaction
                 {
                     _currentCollider = null;
                     _currentInteractable = null;
-                    OnHoverEnded?.Invoke();
+                    HoverEnded?.Invoke();
                 }
             }
-
-            // _canvasController.ShowInteractionDisplay(found);
         }
 
         private bool TryGetInteractable(out Collider collider, out IInteractable interactable)
