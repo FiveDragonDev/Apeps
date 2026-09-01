@@ -5,7 +5,7 @@ namespace Assets.Scripts.Interactables.Base
 {
     public class Toggle : MonoBehaviour, IInteractable
     {
-        public UnityEvent<bool> OnToggled;
+        public UnityEvent<bool> Toggled;
 
         public bool IsOn => _isOn;
 
@@ -18,7 +18,7 @@ namespace Assets.Scripts.Interactables.Base
         public virtual void BeginInteraction()
         {
             _isOn = !_isOn;
-            OnToggled?.Invoke(_isOn);
+            Toggled?.Invoke(_isOn);
         }
         public virtual void UpdateInteraction(float deltaTime) { }
         public virtual void EndInteraction() { }

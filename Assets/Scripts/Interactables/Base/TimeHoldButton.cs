@@ -2,18 +2,18 @@
 {
     public class TimeHoldButton : HoldButton
     {
-        public float ActiveTime => _activeTime;
+        public float HoldDuration => _holdDuration;
 
-        private float _activeTime;
+        private float _holdDuration;
 
         public override void BeginInteraction()
         {
-            _activeTime = 0;
+            _holdDuration = 0;
             base.BeginInteraction();
         }
         public override void UpdateInteraction(float deltaTime)
         {
-            if (IsPressed) _activeTime += deltaTime;
+            if (IsPressed) _holdDuration += deltaTime;
         }
     }
 }
