@@ -13,6 +13,7 @@ namespace Assets.Scripts.Player
         [Space]
         [SerializeField] private PlayerMovementController _movementController;
         [SerializeField] private PlayerFirstPersonCameraController _cameraController;
+        [SerializeField] private PlayerCameraEffectsController _cameraEffectsController;
         [SerializeField] private PlayerInteractionController _interactionController;
 
         private void Awake()
@@ -25,6 +26,7 @@ namespace Assets.Scripts.Player
 
             if (_movementController != null) _movementController.Initialize(_inputHandler.Movement);
             if (_cameraController != null) _cameraController.Initialize(_inputHandler.Camera);
+            if (_cameraEffectsController != null && _movementController != null) _cameraEffectsController.Initialize(_inputHandler.Camera, _movementController.Context);
             if (_interactionController != null) _interactionController.Initialize(_inputHandler.Interaction);
             // etc.
         }

@@ -45,7 +45,7 @@ namespace Assets.Scripts.Player.Movement.StateMachine
 
         private bool _jumpRequested;
 
-        public override void Setup() => AddTransitionTo<AirborneState>(ctx => !ctx.Sensor.IsOnSurface || ctx.Sensor.IsOnTooSteepSlope(Context.Config.SlopeAngle));
+        public override void Setup() => AddTransitionTo<AirborneState>(ctx => !ctx.IsGrounded);
         public override void Enter() => Context.Input.Jump += OnJump;
         public override void Update(float deltaTime)
         {
@@ -87,7 +87,7 @@ namespace Assets.Scripts.Player.Movement.StateMachine
         private Vector2 _move;
         private bool _sprint;
 
-        public override void Setup() => AddTransitionTo<GroundedState>(ctx => ctx.Sensor.IsOnSurface && !ctx.Sensor.IsOnTooSteepSlope(Context.Config.SlopeAngle));
+        public override void Setup() => AddTransitionTo<GroundedState>(ctx => ctx.IsGrounded);
         public override void Update(float deltaTime)
         {
             _move = Context.Input.Move;
