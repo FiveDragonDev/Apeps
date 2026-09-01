@@ -1139,8 +1139,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Player.Camera.PlayerFirstPersonCameraController
   _mouseSensitivity: 0.2
-  _smoothTime: 0.015
-  _minPitch: -80
+  _smoothTime: 0.0175
+  _minPitch: -75
   _maxPitch: 75
   _body: {fileID: 844541447}
 --- !u!1 &1294500019

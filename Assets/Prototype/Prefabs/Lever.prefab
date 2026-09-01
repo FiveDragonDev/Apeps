@@ -46,15 +46,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f009748a3501dfb43b826c0eab0aa6a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Interactables.Lever
-  Switched:
+  Toggled:
     m_PersistentCalls:
       m_Calls: []
-  _initialActive: 0
+  _isOnByDefault: 0
   _lever: {fileID: 1352891165955505162}
   _rotationAxis: {x: 1, y: 0, z: 0}
   _minAngle: 22.5
   _maxAngle: -22.5
-  _smoothTime: 0.1
+  _smoothTime: 0.15
 --- !u!136 &4084288345422068107
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -165,7 +165,7 @@ MonoBehaviour:
   _top: {fileID: 446521418415028755}
   _rotationAxis: {x: 0, y: 1, z: 0}
   _openAngle: 90
-  _smoothTime: 0.05
+  _smoothTime: 0.025
 --- !u!65 &7163610828104976616
 BoxCollider:
   m_ObjectHideFlags: 0
