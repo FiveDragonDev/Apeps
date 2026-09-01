@@ -7,6 +7,7 @@ namespace Assets.Scripts.UI.Interactions
     {
         public bool Visible { get; private set;  }
 
+        [Header("References")]
         [SerializeField] private Canvas _canvas;
         [SerializeField] private Image _progress;
 

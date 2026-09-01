@@ -6,6 +6,7 @@ namespace Assets.Scripts.UI.Interactions
 {
     public sealed class InteractionUIController : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] private PlayerInteractionController _interaction;
         [SerializeField] private InteractionProgressView _progressView;
 

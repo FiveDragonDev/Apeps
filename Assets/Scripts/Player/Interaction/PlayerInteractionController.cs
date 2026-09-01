@@ -32,10 +32,12 @@ namespace Assets.Scripts.Player.Interaction
         public InteractionTarget? Hovered => _hovered;
         public InteractionTarget? Active => _active;
 
+        [Header("Settings")]
         [SerializeField] private LayerMask _interactionLayer = ~0;
         [SerializeField, Min(0)] private float _maxInteractionDistance = 1;
         [SerializeField, Min(0)] private float _interactionRadius = 1;
 
+        [Space, Header("References")]
         [SerializeField] private Transform _sender;
 
         private IInteractionInput _input;

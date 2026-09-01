@@ -7,9 +7,11 @@ namespace Assets.Scripts.Player.Movement.Sensors
         public bool IsOnSurface { get; private set; }
         public Vector3 GroundNormal { get; private set; }
 
+        [Header("Settings")]
         [SerializeField] private LayerMask _groundMask = ~0;
         [SerializeField, Min(0)] private float _checkDistance = 1;
 
+        [Space, Header("References")]
         [SerializeField] private CapsuleCollider _collider;
 
         private void FixedUpdate()

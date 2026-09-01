@@ -10,9 +10,11 @@ namespace Assets.Scripts.Player.Movement
     {
         public MovementContext Context { get; private set; }
 
+        [Header("Settings")]
         [SerializeField] private MovementConfig _config;
 
-        [Space, SerializeField] private PlayerMovementSensor _sensor;
+        [Space, Header("References")]
+        [SerializeField] private PlayerMovementSensor _sensor;
 
         private IMovementInput _input;
         private MovementMotor _motor;

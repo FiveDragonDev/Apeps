@@ -11,6 +11,7 @@ namespace Assets.Scripts.Player.Input
         public ICameraInput Camera => _camera;
         public IInteractionInput Interaction => _interaction;
 
+        [Header("Input Actions")]
         [SerializeField] private MovementActions _movementActions = new();
         [Space, SerializeField] private CameraActions _cameraActions = new();
         [Space, SerializeField] private InteractionActions _interactionActions = new();

@@ -10,7 +10,7 @@ namespace Assets.Scripts.Player
     {
         [SerializeField] private PlayerInputHandler _inputHandler;
 
-        [Space]
+        [Space, Header("References")]
         [SerializeField] private PlayerMovementController _movementController;
         [SerializeField] private PlayerFirstPersonCameraController _cameraController;
         [SerializeField] private PlayerCameraEffectsController _cameraEffectsController;
