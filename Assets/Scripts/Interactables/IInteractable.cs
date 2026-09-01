@@ -2,6 +2,8 @@
 {
     public interface IInteractable
     {
-        void Interact();
+        void BeginInteraction() { }
+        void UpdateInteraction(float deltaTime) { }
+        void EndInteraction() { }
     }
 }

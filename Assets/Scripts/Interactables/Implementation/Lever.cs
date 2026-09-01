@@ -1,15 +1,10 @@
-﻿using System;
+﻿using Assets.Scripts.Interactables.Base;
 using UnityEngine;
-using UnityEngine.Events;
 
-namespace Assets.Scripts.Interactables
+namespace Assets.Scripts.Interactables.Implementation
 {
-    public sealed class Lever : MonoBehaviour, IInteractable
+    public sealed class Lever : Toggle
     {
-        public UnityEvent<bool> Switched;
-
-        [SerializeField] private bool _initialActive;
-
         [Space]
         [SerializeField] private Transform _lever;
         [SerializeField] private Vector3 _rotationAxis = Vector3.right;
@@ -20,26 +15,16 @@ namespace Assets.Scripts.Interactables
         private float _angle;
         private float _angleVelocity;
 
-        private bool _active;
-
         private void Start()
         {
-            _active = _initialActive;
-
-            _angle = _active ? _maxAngle : _minAngle;
+            _angle = IsOn ? _maxAngle : _minAngle;
             _lever.localRotation = Quaternion.AngleAxis(_angle, in _rotationAxis);
         }
         private void Update()
         {
-            var targetAngle = _active ? _maxAngle : _minAngle;
+            var targetAngle = IsOn ? _maxAngle : _minAngle;
             _angle = Mathf.SmoothDampAngle(_angle, targetAngle, ref _angleVelocity, _smoothTime);
             _lever.localRotation = Quaternion.AngleAxis(_angle, in _rotationAxis);
-        }
-
-        public void Interact()
-        {
-            _active = !_active;
-            Switched?.Invoke(_active);
         }
     }
 }

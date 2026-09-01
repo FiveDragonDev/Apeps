@@ -10,7 +10,12 @@ namespace Assets.Scripts.Player.Interaction
         public event Action<IInteractable> HoverStarted;
         public event Action<IInteractable, IInteractable> HoverChanged;
         public event Action HoverEnded;
-        public event Action<IInteractable> Interacted;
+
+        public event Action<IInteractable> InteractionStarted;
+        public event Action<IInteractable> InteractionEnded;
+
+        public IInteractable Hovered => _hoveredInteractable;
+        public IInteractable Active => _activeInteractable;
 
         [SerializeField] private LayerMask _interactionLayer = ~0;
         [SerializeField, Min(0)] private float _maxInteractionDistance = 1;
@@ -20,61 +25,86 @@ namespace Assets.Scripts.Player.Interaction
 
         private IInteractionInput _input;
 
-        private Collider _currentCollider;
-        private IInteractable _currentInteractable;
+        private Collider _hoveredCollider;
+        private IInteractable _hoveredInteractable;
+        private IInteractable _activeInteractable;
 
-        private bool _initialized;
-
-        private void Start() => InitializeInternal();
+        private void OnEnable()
+        {
+            if (_input != null) _input.Interact += OnInteract;
+        }
         private void OnDisable()
         {
-            if (_input != null) _input.Interact -= Interact;
+            if (_input != null) _input.Interact -= OnInteract;
+
+            EndInteraction();
         }
-        private void Update() => HandleInteraction();
+        private void Update()
+        {
+            UpdateHover();
+            UpdateInteraction(Time.deltaTime);
+        }
 
         public void Initialize(IInteractionInput input)
         {
+            if (_input != null) _input.Interact -= OnInteract;
+
             _input = input;
-            InitializeInternal();
+
+            if (isActiveAndEnabled && _input != null) _input.Interact += OnInteract;
         }
 
-        private void InitializeInternal()
+        private void OnInteract(bool started)
         {
-            if (_initialized || _input == null) return;
-            _input.Interact += Interact;
-            _initialized = true;
+            if (started) BeginInteraction();
+            else EndInteraction();
         }
 
-        private void Interact()
+        private void BeginInteraction()
         {
-            if (_currentInteractable == null) return;
+            if (_activeInteractable != null || _hoveredInteractable == null) return;
 
-            _currentInteractable.Interact();
-            Interacted?.Invoke(_currentInteractable);
+            _activeInteractable = _hoveredInteractable;
+            _activeInteractable.BeginInteraction();
+
+            InteractionStarted?.Invoke(_activeInteractable);
+        }
+        private void UpdateInteraction(float deltaTime) => _activeInteractable?.UpdateInteraction(deltaTime);
+        private void EndInteraction()
+        {
+            if (_activeInteractable == null) return;
+
+            var interactable = _activeInteractable;
+            _activeInteractable = null;
+
+            interactable.EndInteraction();
+
+            InteractionEnded?.Invoke(interactable);
         }
 
-        private void HandleInteraction()
+        private void UpdateHover()
         {
-            if (TryGetInteractable(out var hitCollider, out var interactable))
+            if (TryGetInteractable(out var collider, out var interactable))
             {
-                var previous = _currentInteractable;
-                var previousCollider = _currentCollider;
+                if (_hoveredCollider == collider) return;
 
-                _currentCollider = hitCollider;
-                _currentInteractable = interactable;
+                var previous = _hoveredInteractable;
+
+                _hoveredCollider = collider;
+                _hoveredInteractable = interactable;
 
                 if (previous == null) HoverStarted?.Invoke(interactable);
-                else if (previousCollider != hitCollider) HoverChanged?.Invoke(previous, interactable);
+                else HoverChanged?.Invoke(previous, interactable);
+
+                return;
             }
-            else
-            {
-                if (_currentCollider != null)
-                {
-                    _currentCollider = null;
-                    _currentInteractable = null;
-                    HoverEnded?.Invoke();
-                }
-            }
+
+            if (_hoveredInteractable == null) return;
+
+            _hoveredCollider = null;
+            _hoveredInteractable = null;
+
+            HoverEnded?.Invoke();
         }
 
         private bool TryGetInteractable(out Collider collider, out IInteractable interactable)

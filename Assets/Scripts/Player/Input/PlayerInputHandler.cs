@@ -23,7 +23,7 @@ namespace Assets.Scripts.Player.Input
         private InputHoldBinding _sprint;
         private InputPressBinding _jump;
         private InputValueBinding<Vector2> _look;
-        private InputPressBinding _interact;
+        private InputHoldBinding _interact;
 
         private void Awake()
         {
