@@ -7,7 +7,10 @@ namespace Assets.Scripts.UI.Interactions
     {
         public bool Visible { get; private set;  }
 
-        [Header("References")]
+        [Header("Settings")]
+        [SerializeField] private Gradient _gradientByProgress;
+
+        [Space, Header("References")]
         [SerializeField] private Canvas _canvas;
         [SerializeField] private Image _progress;
 
@@ -24,7 +27,12 @@ namespace Assets.Scripts.UI.Interactions
             Visible = false;
         }
 
-        public void SetProgress(float progress) => _progress.fillAmount = progress;
+        public void SetProgress(float progress)
+        {
+            _progress.color = _gradientByProgress.Evaluate(progress);
+            _progress.fillAmount = progress;
+        }
+
         public void SetPosition(Vector3 position) => transform.position = position;
         public void SetRotation(Quaternion rotation) => transform.rotation = rotation;
     }
