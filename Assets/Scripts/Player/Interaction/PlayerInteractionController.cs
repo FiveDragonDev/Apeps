@@ -5,17 +5,32 @@ using UnityEngine;
 
 namespace Assets.Scripts.Player.Interaction
 {
+    public readonly struct InteractionTarget
+    {
+        public IInteractable Interactable { get; }
+        public Collider Collider { get; }
+        public Vector3 Point { get; }
+        public Vector3 Normal { get; }
+
+        public InteractionTarget(IInteractable interactable, Collider collider, Vector3 point, Vector3 normal)
+        {
+            Interactable = interactable;
+            Collider = collider;
+            Point = point;
+            Normal = normal;
+        }
+    }
     public sealed class PlayerInteractionController : MonoBehaviour
     {
-        public event Action<IInteractable> HoverStarted;
-        public event Action<IInteractable, IInteractable> HoverChanged;
-        public event Action HoverEnded;
+        public event Action<InteractionTarget> HoverStarted;
+        public event Action<InteractionTarget, InteractionTarget> HoverChanged;
+        public event Action<InteractionTarget> HoverEnded;
 
-        public event Action<IInteractable> InteractionStarted;
-        public event Action<IInteractable> InteractionEnded;
+        public event Action<InteractionTarget> InteractionStarted;
+        public event Action<InteractionTarget> InteractionEnded;
 
-        public IInteractable Hovered => _hoveredInteractable;
-        public IInteractable Active => _activeInteractable;
+        public InteractionTarget? Hovered => _hovered;
+        public InteractionTarget? Active => _active;
 
         [SerializeField] private LayerMask _interactionLayer = ~0;
         [SerializeField, Min(0)] private float _maxInteractionDistance = 1;
@@ -25,9 +40,8 @@ namespace Assets.Scripts.Player.Interaction
 
         private IInteractionInput _input;
 
-        private Collider _hoveredCollider;
-        private IInteractable _hoveredInteractable;
-        private IInteractable _activeInteractable;
+        private InteractionTarget? _hovered;
+        private InteractionTarget? _active;
 
         private void OnEnable()
         {
@@ -62,65 +76,67 @@ namespace Assets.Scripts.Player.Interaction
 
         private void BeginInteraction()
         {
-            if (_activeInteractable != null || _hoveredInteractable == null) return;
+            if (_active.HasValue || !_hovered.HasValue) return;
 
-            _activeInteractable = _hoveredInteractable;
-            _activeInteractable.BeginInteraction();
+            _active = _hovered;
+            _active?.Interactable.BeginInteraction();
 
-            InteractionStarted?.Invoke(_activeInteractable);
+            InteractionStarted?.Invoke(_active.Value);
         }
-        private void UpdateInteraction(float deltaTime) => _activeInteractable?.UpdateInteraction(deltaTime);
+        private void UpdateInteraction(float deltaTime)
+        {
+            if (!_active.HasValue) return;
+            _active.Value.Interactable.UpdateInteraction(deltaTime);
+        }
+
         private void EndInteraction()
         {
-            if (_activeInteractable == null) return;
+            if (!_active.HasValue) return;
 
-            var interactable = _activeInteractable;
-            _activeInteractable = null;
+            var interactable = _active;
+            _active = null;
 
-            interactable.EndInteraction();
+            interactable.Value.Interactable.EndInteraction();
 
-            InteractionEnded?.Invoke(interactable);
+            InteractionEnded?.Invoke(interactable.Value);
         }
 
         private void UpdateHover()
         {
-            if (TryGetInteractable(out var collider, out var interactable))
+            if (TryGetInteractable(out var target))
             {
-                if (_hoveredCollider == collider) return;
+                if (_hovered.HasValue && _hovered.Value.Collider == target.Collider)
+                    return;
 
-                var previous = _hoveredInteractable;
+                if (!_hovered.HasValue) HoverStarted?.Invoke(target);
+                else HoverChanged?.Invoke(_hovered.Value, target);
 
-                _hoveredCollider = collider;
-                _hoveredInteractable = interactable;
-
-                if (previous == null) HoverStarted?.Invoke(interactable);
-                else HoverChanged?.Invoke(previous, interactable);
-
+                _hovered = target;
                 return;
             }
 
-            if (_hoveredInteractable == null) return;
+            if (!_hovered.HasValue) return;
 
-            _hoveredCollider = null;
-            _hoveredInteractable = null;
+            var previous = _hovered.Value;
+            _hovered = null;
 
-            HoverEnded?.Invoke();
+            HoverEnded?.Invoke(previous);
         }
 
-        private bool TryGetInteractable(out Collider collider, out IInteractable interactable)
+        private bool TryGetInteractable(out InteractionTarget target)
         {
             Ray ray = new(_sender.position, _sender.forward);
+
             if (Physics.SphereCast(ray, _interactionRadius, out var hit, _maxInteractionDistance, _interactionLayer))
             {
-                if (hit.collider.TryGetComponent(out interactable))
+                if (hit.collider.TryGetComponent<IInteractable>(out var interactable))
                 {
-                    collider = hit.collider;
+                    target = new(interactable, hit.collider, hit.point, hit.normal);
                     return true;
                 }
             }
 
-            collider = null;
-            interactable = null;
+            target = default;
             return false;
         }
     }

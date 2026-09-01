@@ -1,10 +1,20 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Assets.Scripts.Interactables.Base
 {
-    public class ProgressHoldButton : HoldButton
+    public interface IProgressInteractable : IInteractable
     {
+        float Progress { get; }
+        bool IsComplete { get; }
+
+        event Action<float> ProgressChanged;
+    }
+    public class ProgressHoldButton : HoldButton, IProgressInteractable
+    {
+        public event Action<float> ProgressChanged;
+
         public UnityEvent<float> ProgressUpdated;
         public UnityEvent HoldCompleted;
         public UnityEvent HoldCanceled;
@@ -16,13 +26,6 @@ namespace Assets.Scripts.Interactables.Base
         [SerializeField, Min(0)] private float _requiredHoldTime = 1;
 
         private float _currentHoldTime;
-
-        public void ResetProgress()
-        {
-            _currentHoldTime = 0;
-            IsComplete = false;
-            ProgressUpdated?.Invoke(0);
-        }
 
         public override void BeginInteraction()
         {
@@ -36,9 +39,9 @@ namespace Assets.Scripts.Interactables.Base
 
             if (!IsComplete)
             {
-                _currentHoldTime = 0f;
+                _currentHoldTime = 0;
                 HoldCanceled?.Invoke();
-                ProgressUpdated?.Invoke(0);
+                RaiseProgressChanged(0);
             }
         }
         public override void UpdateInteraction(float deltaTime)
@@ -48,15 +51,20 @@ namespace Assets.Scripts.Interactables.Base
             _currentHoldTime += deltaTime;
 
             float progress = Progress;
-            ProgressUpdated?.Invoke(progress);
-
             if (progress >= 1)
             {
                 IsComplete = true;
                 _currentHoldTime = _requiredHoldTime;
-                ProgressUpdated?.Invoke(1);
+                RaiseProgressChanged(1);
                 HoldCompleted?.Invoke();
             }
+            else RaiseProgressChanged(progress);
+        }
+
+        private void RaiseProgressChanged(float progress)
+        {
+            ProgressUpdated?.Invoke(progress);
+            ProgressChanged?.Invoke(progress);
         }
     }
 }

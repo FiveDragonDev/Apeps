@@ -255,19 +255,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.3764706, b: 0, a: 1}
+  m_Color: {r: 1, g: 0.2509804, b: 0, a: 0.8784314}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1fb3d9002bf902e4c9f9a41ec6ba5065, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
-  m_FillAmount: 1
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -301,6 +301,53 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 0.02}
   m_Center: {x: 1, y: 0, z: -0.01}
+--- !u!1 &267428865
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 267428867}
+  - component: {fileID: 267428866}
+  m_Layer: 0
+  m_Name: Progress View
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &267428866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 267428865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa18a9a8e544e004eb5b46a796cee9e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.UI.Interactions.InteractionProgressView
+  _canvas: {fileID: 525044912}
+  _progress: {fileID: 122078097}
+--- !u!4 &267428867
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 267428865}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 525044913}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &323796923
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -601,12 +648,12 @@ GameObject:
   - component: {fileID: 525044911}
   - component: {fileID: 525044910}
   m_Layer: 5
-  m_Name: Interaction Canvas
+  m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &525044910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -654,7 +701,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 525044909}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}
@@ -678,13 +725,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 525044909}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.0009765625, y: 0.0009765625, z: 0.0009765625}
+  m_LocalScale: {x: 0.00024414062, y: 0.00024414062, z: 0.00024414062}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 122078096}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 267428867}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -952,6 +999,7 @@ GameObject:
   - component: {fileID: 844541444}
   - component: {fileID: 844541446}
   - component: {fileID: 844541448}
+  - component: {fileID: 844541449}
   - component: {fileID: 844541445}
   m_Layer: 0
   m_Name: Player
@@ -1110,6 +1158,20 @@ MonoBehaviour:
   _maxInteractionDistance: 2
   _interactionRadius: 0.4
   _sender: {fileID: 1054419756}
+--- !u!114 &844541449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 844541440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66eeedb8c32b0a14da9ed99f65e4c148, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.UI.Interactions.InteractionUIController
+  _interaction: {fileID: 844541448}
+  _progressView: {fileID: 267428866}
 --- !u!114 &969978461
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2426,10 +2488,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Table
       objectReference: {fileID: 0}
-    - target: {fileID: 1629485612231237520, guid: b110cc248ff2987479377af34cf53455, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
-      objectReference: {fileID: 0}
     - target: {fileID: 3322388342122768450, guid: b110cc248ff2987479377af34cf53455, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5
@@ -2788,5 +2846,5 @@ SceneRoots:
   - {fileID: 1750350964786416107}
   - {fileID: 5986072778332079157}
   - {fileID: 3967735420518123569}
-  - {fileID: 525044913}
+  - {fileID: 267428867}
   - {fileID: 1016883343}
