@@ -15,12 +15,17 @@ namespace Assets.Scripts.Interactables.Base
 
         private void Awake() => _isOn = _isOnByDefault;
 
-        public virtual void BeginInteraction()
+        public void BeginInteraction()
         {
             _isOn = !_isOn;
             Toggled?.Invoke(_isOn);
+            OnBeginInteraction();
         }
-        public virtual void UpdateInteraction(float deltaTime) { }
-        public virtual void EndInteraction() { }
+        public void UpdateInteraction(float deltaTime) => OnUpdateInteraction(deltaTime);
+        public void EndInteraction() => OnEndInteraction();
+
+        protected virtual void OnBeginInteraction() { }
+        protected virtual void OnUpdateInteraction(float deltaTime) { }
+        protected virtual void OnEndInteraction() { }
     }
 }

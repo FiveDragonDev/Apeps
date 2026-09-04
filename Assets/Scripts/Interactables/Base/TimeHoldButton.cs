@@ -6,12 +6,8 @@
 
         private float _holdDuration;
 
-        public override void BeginInteraction()
-        {
-            _holdDuration = 0;
-            base.BeginInteraction();
-        }
-        public override void UpdateInteraction(float deltaTime)
+        protected override void OnBeginInteraction() => _holdDuration = 0;
+        protected override void OnUpdateInteraction(float deltaTime)
         {
             if (IsPressed) _holdDuration += deltaTime;
         }

@@ -32,8 +32,5 @@ namespace Assets.Scripts.UI.Interactions
             _progress.color = _gradientByProgress.Evaluate(progress);
             _progress.fillAmount = progress;
         }
-
-        public void SetPosition(Vector3 position) => transform.position = position;
-        public void SetRotation(Quaternion rotation) => transform.rotation = rotation;
     }
 }

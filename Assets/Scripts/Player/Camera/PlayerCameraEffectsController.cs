@@ -35,10 +35,8 @@ namespace Assets.Scripts.Player.Camera
 
         private float _bobTimer;
 
-        private float _tiltX;
-        private float _tiltZ;
-        private float _tiltVelocityX;
-        private float _tiltVelocityZ;
+        private Vector2 _tilt;
+        private Vector2 _tiltVelocity;
 
         private Vector3 _currentShakeOffset;
         private Vector3 _shakeVelocity;
@@ -74,32 +72,27 @@ namespace Assets.Scripts.Player.Camera
             float speedRatio = Mathf.Clamp01(speed / Mathf.Max(_movement.Config.SprintSpeed, 0.001f));
 
             float bobSpeed = _walkBobSpeed;
-            float amountX = _walkBobAmountX;
-            float amountY = _walkBobAmountY;
+            Vector2 amount = new(_walkBobAmountX, _walkBobAmountY);
 
             if (_movement.IsSprinting)
             {
                 bobSpeed *= _sprintBobSpeedMultiplier;
-                amountX *= _sprintBobAmountMultiplier;
-                amountY *= _sprintBobAmountMultiplier;
+                amount *= _sprintBobAmountMultiplier;
             }
 
             _bobTimer += Time.deltaTime * bobSpeed * speedRatio;
 
-            return new(Mathf.Cos(_bobTimer) * amountX, Mathf.Sin(_bobTimer * 2f) * amountY, 0f);
+            return new(Mathf.Cos(_bobTimer) * amount.x, Mathf.Sin(_bobTimer * 2) * amount.y, 0);
         }
 
         private Quaternion CalculateTilt()
         {
             Vector2 move = _movement.Input.Move;
 
-            float targetTiltZ = -move.x * _strafeTiltAngle;
-            float targetTiltX = move.y * _turnTiltAngle;
+            Vector2 targetTilt = new(move.y * _turnTiltAngle, -move.x * _strafeTiltAngle);
+            _tilt = Vector2.SmoothDamp(_tilt, targetTilt, ref _tiltVelocity, _tiltSmoothTime);
 
-            _tiltX = Mathf.SmoothDamp(_tiltX, targetTiltX, ref _tiltVelocityX, _tiltSmoothTime);
-            _tiltZ = Mathf.SmoothDamp(_tiltZ, targetTiltZ, ref _tiltVelocityZ, _tiltSmoothTime);
-
-            return Quaternion.Euler(_tiltX, 0, _tiltZ);
+            return Quaternion.Euler(_tilt.x, 0, _tilt.y);
         }
 
         private Vector3 CalculateShake()
@@ -112,7 +105,7 @@ namespace Assets.Scripts.Player.Camera
             float noiseX = Mathf.PerlinNoise(time, 0) - 0.5f;
             float noiseY = Mathf.PerlinNoise(0, time) - 0.5f;
 
-            var target = _shakeAmplitude * multiplier * new Vector3(noiseX, noiseY, 0f);
+            var target = _shakeAmplitude * multiplier * new Vector3(noiseX, noiseY, 0);
 
             _currentShakeOffset = Vector3.SmoothDamp(_currentShakeOffset, target, ref _shakeVelocity, _shakeSmoothTime);
 

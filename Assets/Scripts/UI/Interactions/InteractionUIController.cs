@@ -8,7 +8,9 @@ namespace Assets.Scripts.UI.Interactions
     {
         [Header("References")]
         [SerializeField] private PlayerInteractionController _interaction;
+
         [SerializeField] private InteractionProgressView _progressView;
+        [SerializeField] private InteractionCrosshair _crosshair;
 
         private IProgressInteractable _progressInteractable;
 
@@ -19,20 +21,32 @@ namespace Assets.Scripts.UI.Interactions
         {
             _interaction.InteractionStarted += OnInteractionStarted;
             _interaction.InteractionEnded += OnInteractionEnded;
+
+            _interaction.HoverStarted += OnHoverStarted;
+            _interaction.HoverChanged += OnHoverChanged;
+            _interaction.HoverEnded += OnHoverEnded;
         }
         private void OnDisable()
         {
             _interaction.InteractionStarted -= OnInteractionStarted;
             _interaction.InteractionEnded -= OnInteractionEnded;
 
+            _interaction.HoverStarted -= OnHoverStarted;
+            _interaction.HoverChanged -= OnHoverChanged;
+            _interaction.HoverEnded -= OnHoverEnded;
+
             UnsubscribeProgress();
             _progressView.Hide();
+            _crosshair.Hide();
         }
         private void Update()
         {
-            if (!_progressView.Visible) return;
-
-            FaceCamera();
+            if (_progressView.Visible) FaceCamera(_progressView.transform);
+            if (_crosshair.Visible && _interaction.Hovered.HasValue)
+            {
+                _crosshair.transform.position = _interaction.Hovered.Value.Point + _interaction.Hovered.Value.Normal * 0.1f;
+                FaceCamera(_crosshair.transform);
+            }
         }
 
         private void OnInteractionStarted(InteractionTarget target)
@@ -44,7 +58,7 @@ namespace Assets.Scripts.UI.Interactions
             _progressInteractable = progress;
             _progressInteractable.ProgressChanged += OnProgressChanged;
 
-            _progressView.SetPosition(target.Point + target.Normal * 0.1f);
+            _progressView.transform.position = target.Point + target.Normal * 0.1f;
 
             _progressView.SetProgress(progress.Progress);
             _progressView.Show();
@@ -57,6 +71,10 @@ namespace Assets.Scripts.UI.Interactions
             _progressView.Hide();
         }
 
+        private void OnHoverStarted(InteractionTarget _) => _crosshair.Show();
+        private void OnHoverChanged(InteractionTarget _, InteractionTarget __) => _crosshair.Show();
+        private void OnHoverEnded(InteractionTarget target) => _crosshair.Hide();
+
         private void OnProgressChanged(float progress) => _progressView.SetProgress(progress);
 
         private void UnsubscribeProgress()
@@ -67,14 +85,14 @@ namespace Assets.Scripts.UI.Interactions
             _progressInteractable = null;
         }
 
-        private void FaceCamera()
+        private void FaceCamera(Transform transform)
         {
             if (_camera == null) return;
 
-            var direction = _progressView.transform.position - _camera.transform.position;
+            var direction = transform.position - _camera.transform.position;
             if (direction.sqrMagnitude < 0.0001f) return;
 
-            _progressView.SetRotation(Quaternion.LookRotation(direction));
+            transform.rotation = Quaternion.LookRotation(direction);
         }
     }
 }

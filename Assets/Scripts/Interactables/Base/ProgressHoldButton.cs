@@ -27,16 +27,13 @@ namespace Assets.Scripts.Interactables.Base
 
         private float _currentHoldTime;
 
-        public override void BeginInteraction()
+        protected override void OnBeginInteraction()
         {
             IsComplete = false;
             _currentHoldTime = 0;
-            base.BeginInteraction();
         }
-        public override void EndInteraction()
+        protected override void OnEndInteraction()
         {
-            base.EndInteraction();
-
             if (!IsComplete)
             {
                 _currentHoldTime = 0;
@@ -44,7 +41,7 @@ namespace Assets.Scripts.Interactables.Base
                 RaiseProgressChanged(0);
             }
         }
-        public override void UpdateInteraction(float deltaTime)
+        protected override void OnUpdateInteraction(float deltaTime)
         {
             if (!IsPressed || IsComplete) return;
 
