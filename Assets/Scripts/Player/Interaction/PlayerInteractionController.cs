@@ -107,8 +107,7 @@ namespace Assets.Scripts.Player.Interaction
         {
             if (TryGetInteractable(out var target))
             {
-                if (_hovered.HasValue && _hovered.Value.Collider == target.Collider)
-                    return;
+                if (_hovered.HasValue && _hovered.Value.Collider.gameObject == target.Collider.gameObject) return;
 
                 if (!_hovered.HasValue) HoverStarted?.Invoke(target);
                 else HoverChanged?.Invoke(_hovered.Value, target);
