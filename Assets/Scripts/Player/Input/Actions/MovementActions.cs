@@ -10,5 +10,6 @@ namespace Assets.Scripts.Player.Input.Actions
         [field: SerializeField] public InputActionReference Move { get; private set; }
         [field: SerializeField] public InputActionReference Sprint { get; private set; }
         [field: SerializeField] public InputActionReference Jump { get; private set; }
+        [field: SerializeField] public InputActionReference Crouch { get; private set; }
     }
 }

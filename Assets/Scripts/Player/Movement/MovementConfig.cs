@@ -7,9 +7,14 @@ namespace Assets.Scripts.Player.Movement
     public sealed class MovementConfig
     {
         [field: Header("Grounded")]
+        [field: SerializeField, Min(0)] public float StandingHeight { get; private set; } = 1;
         [field: SerializeField, Min(0)] public float WalkSpeed { get; private set; } = 1;
         [field: SerializeField, Min(0)] public float SprintSpeed { get; private set; } = 1;
         [field: SerializeField, Min(0)] public float GroundedAcceleration { get; private set; } = 1;
+
+        [field: Space, Header("Crouch")]
+        [field: SerializeField, Min(0)] public float CrouchHeight { get; private set; } = 1;
+        [field: SerializeField, Min(0)] public float CrouchSpeed { get; private set; } = 1;
 
         [field: Space, Header("Slope")]
         [field: SerializeField, Min(0)] public float SlopeAngle { get; private set; } = 1;

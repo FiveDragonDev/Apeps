@@ -559,7 +559,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.15
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 95
   orthographic: 0
@@ -593,7 +593,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1294500020}
-  m_Father: {fileID: 1054419756}
+  m_Father: {fileID: 1367727179}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
@@ -1224,7 +1224,7 @@ Transform:
   m_GameObject: {fileID: 844541440}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1249,6 +1249,7 @@ MonoBehaviour:
     <Move>k__BackingField: {fileID: 1998716356}
     <Sprint>k__BackingField: {fileID: 969978461}
     <Jump>k__BackingField: {fileID: 2062995010}
+    <Crouch>k__BackingField: {fileID: 7040659881675835329, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   _cameraActions:
     <Look>k__BackingField: {fileID: 1966984881}
   _interactionActions:
@@ -1268,7 +1269,7 @@ MonoBehaviour:
   _inputHandler: {fileID: 844541442}
   _movementController: {fileID: 844541444}
   _cameraController: {fileID: 1054419757}
-  _cameraEffectsController: {fileID: 1054419758}
+  _cameraEffectsController: {fileID: 1367727180}
   _interactionController: {fileID: 844541448}
 --- !u!114 &844541444
 MonoBehaviour:
@@ -1283,9 +1284,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementController
   _config:
+    <StandingHeight>k__BackingField: 2
     <WalkSpeed>k__BackingField: 3
     <SprintSpeed>k__BackingField: 6
     <GroundedAcceleration>k__BackingField: 15
+    <CrouchHeight>k__BackingField: 1
+    <CrouchSpeed>k__BackingField: 1
     <SlopeAngle>k__BackingField: 60
     <SlideSpeed>k__BackingField: 5
     <SlideAcceleration>k__BackingField: 15
@@ -1295,6 +1299,7 @@ MonoBehaviour:
     <Gravity>k__BackingField: -15
     <MaxFallSpeed>k__BackingField: 50
   _sensor: {fileID: 844541446}
+  _body: {fileID: 844541447}
 --- !u!54 &844541445
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1347,6 +1352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 868c00b2509643b4c925e537450870c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBody
+  _collider: {fileID: 1997479097}
 --- !u!114 &844541448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1631,7 +1637,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1054419756}
   - component: {fileID: 1054419757}
-  - component: {fileID: 1054419758}
   m_Layer: 0
   m_Name: Camera Holder
   m_TagString: Untagged
@@ -1647,12 +1652,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1054419755}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.7, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 330585546}
+  - {fileID: 1367727179}
   m_Father: {fileID: 844541441}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1054419757
@@ -1668,35 +1673,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Player.Camera.PlayerFirstPersonCameraController
   _mouseSensitivity: 0.2
-  _smoothTime: 0.0175
+  _rotationSmoothTime: 0.0175
   _minPitch: -75
   _maxPitch: 75
+  _eyeHeightRatio: 0.9
+  _heightSmoothTime: 0.1
   _body: {fileID: 844541447}
---- !u!114 &1054419758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1054419755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29be4ef116344bc4485ff6594f102def, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Player.Camera.PlayerCameraEffectsController
-  _walkBobSpeed: 8
-  _walkBobAmountY: 0.03
-  _walkBobAmountX: 0.02
-  _sprintBobSpeedMultiplier: 1.3
-  _sprintBobAmountMultiplier: 1.15
-  _strafeTiltAngle: 1.5
-  _turnTiltAngle: 4
-  _tiltSmoothTime: 0.2
-  _shakeAmplitude: 0.01
-  _shakeFrequency: 15
-  _shakeSprintMultiplier: 2
-  _shakeSmoothTime: 0.05
-  _cameraTransform: {fileID: 1054419756}
 --- !u!1 &1147364496
 GameObject:
   m_ObjectHideFlags: 0
@@ -1962,6 +1944,63 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0000002, y: 5, z: 0.9999999}
   m_Center: {x: -0.0000009536743, y: 0.00000071525574, z: 0.000000059604645}
+--- !u!1 &1367727178
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1367727179}
+  - component: {fileID: 1367727180}
+  m_Layer: 0
+  m_Name: Camera Effects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1367727179
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1367727178}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 330585546}
+  m_Father: {fileID: 1054419756}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1367727180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1367727178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29be4ef116344bc4485ff6594f102def, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Player.Camera.PlayerCameraEffectsController
+  _walkBobSpeed: 8
+  _walkBobAmountY: 0.03
+  _walkBobAmountX: 0.02
+  _sprintBobSpeedMultiplier: 1.3
+  _sprintBobAmountMultiplier: 1.15
+  _strafeTiltAngle: 1.5
+  _turnTiltAngle: 4
+  _tiltSmoothTime: 0.2
+  _shakeAmplitude: 0.01
+  _shakeFrequency: 15
+  _shakeSprintMultiplier: 2
+  _shakeSmoothTime: 0.05
 --- !u!65 &1478523936
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2121,7 +2160,7 @@ CapsuleCollider:
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!23 &1997479098
 MeshRenderer:
   m_ObjectHideFlags: 0

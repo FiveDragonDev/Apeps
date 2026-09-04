@@ -5,9 +5,9 @@ namespace Assets.Scripts.Player.Movement.StateMachine
     public readonly struct MovementTransition
     {
         public readonly PlayerMovementState Next;
-        public readonly Func<MovementContext, bool> Predicate;
+        public readonly Predicate<MovementContext> Predicate;
 
-        internal MovementTransition(PlayerMovementState next, Func<MovementContext, bool> predicate)
+        internal MovementTransition(PlayerMovementState next, Predicate<MovementContext> predicate)
         {
             Next = next;
             Predicate = predicate;

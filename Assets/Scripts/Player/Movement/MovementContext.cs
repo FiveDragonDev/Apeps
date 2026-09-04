@@ -17,13 +17,15 @@ namespace Assets.Scripts.Player.Movement
         public MovementMotor Motor { get; }
         public MovementConfig Config { get; }
         public IMovementSensor Sensor { get; }
+        public PlayerBody Body { get; }
 
-        public MovementContext(IMovementInput input, MovementMotor motor, MovementConfig config, IMovementSensor sensor)
+        public MovementContext(IMovementInput input, MovementMotor motor, MovementConfig config, IMovementSensor sensor, PlayerBody body)
         {
             Input = input;
             Motor = motor;
             Config = config;
             Sensor = sensor;
+            Body = body;
         }
     }
 }

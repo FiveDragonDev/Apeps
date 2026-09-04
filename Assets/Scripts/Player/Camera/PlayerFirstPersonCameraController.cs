@@ -7,18 +7,21 @@ namespace Assets.Scripts.Player.Camera
     public sealed class PlayerFirstPersonCameraController : MonoBehaviour
     {
         [Header("Settings")]
-        [SerializeField, Min(0f)] private float _mouseSensitivity = 1;
-        [SerializeField, Min(0)] private float _smoothTime = 0.01f;
+        [SerializeField, Min(0)] private float _mouseSensitivity = 1;
+        [SerializeField, Min(0)] private float _rotationSmoothTime = 0.01f;
 
-        [Space]
-        [SerializeField, Range(-90f, 0f)] private float _minPitch = -90;
-        [SerializeField, Range(0f, 90f)] private float _maxPitch = 90;
+        [Space, SerializeField, Range(-90, 0)] private float _minPitch = -90;
+        [SerializeField, Range(0, 90)] private float _maxPitch = 90;
 
-        [Space]
-        [Header("References")]
+        [Space, SerializeField, Range(0, 1)] private float _eyeHeightRatio = 0.9f;
+        [SerializeField, Min(0)] private float _heightSmoothTime = 0.1f;
+
+        [Space, Header("References")]
         [SerializeField] private PlayerBody _body;
 
         private ICameraInput _input;
+
+        private float _heightVelocity;
 
         private Vector2 _targetRotation;
         private Vector2 _currentRotation;
@@ -54,13 +57,18 @@ namespace Assets.Scripts.Player.Camera
         {
             if (_body == null) return;
 
-            var smoothYaw = Mathf.SmoothDampAngle(_currentRotation.x, _targetRotation.x, ref _rotationVelocity.x, _smoothTime);
-            var smoothPitch = Mathf.SmoothDampAngle(_currentRotation.y, _targetRotation.y, ref _rotationVelocity.y, _smoothTime);
+            // height
+            float targetHeight = _body.Height * _eyeHeightRatio;
+            var position = transform.localPosition;
+            position.y = Mathf.SmoothDamp(position.y, targetHeight, ref _heightVelocity, _heightSmoothTime);
 
+            // rotation
+            var smoothYaw = Mathf.SmoothDampAngle(_currentRotation.x, _targetRotation.x, ref _rotationVelocity.x, _rotationSmoothTime);
+            var smoothPitch = Mathf.SmoothDampAngle(_currentRotation.y, _targetRotation.y, ref _rotationVelocity.y, _rotationSmoothTime);
             _currentRotation = new(smoothYaw, smoothPitch);
-
             _body.SetYaw(smoothYaw);
-            transform.localRotation = Quaternion.Euler(smoothPitch, 0, 0);
+
+            transform.SetLocalPositionAndRotation(position, Quaternion.Euler(smoothPitch, 0, 0));
         }
 
         public void Initialize(ICameraInput input) => _input = input;

@@ -23,6 +23,7 @@ namespace Assets.Scripts.Player.Input
         private InputValueBinding<Vector2> _move;
         private InputHoldBinding _sprint;
         private InputPressBinding _jump;
+        private InputPressBinding _crouch;
         private InputValueBinding<Vector2> _look;
         private InputHoldBinding _interact;
 
@@ -31,6 +32,7 @@ namespace Assets.Scripts.Player.Input
             _move = new(_movementActions.Move, _movement.SetMove, Vector2.zero);
             _sprint = new(_movementActions.Sprint, _movement.SetSprint);
             _jump = new(_movementActions.Jump, _movement.RaiseJump);
+            _crouch = new(_movementActions.Crouch, _movement.RaiseCrouch);
 
             _look = new(_cameraActions.Look, _camera.SetLook, Vector2.zero);
 
@@ -41,7 +43,10 @@ namespace Assets.Scripts.Player.Input
             _move?.Enable();
             _sprint?.Enable();
             _jump?.Enable();
+            _crouch?.Enable();
+
             _look?.Enable();
+
             _interact?.Enable();
         }
         private void OnDisable()
@@ -49,7 +54,10 @@ namespace Assets.Scripts.Player.Input
             _move?.Disable();
             _sprint?.Disable();
             _jump?.Disable();
+            _crouch?.Disable();
+
             _look?.Disable();
+
             _interact?.Disable();
         }
     }

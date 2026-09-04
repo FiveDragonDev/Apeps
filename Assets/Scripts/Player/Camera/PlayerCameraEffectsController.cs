@@ -25,13 +25,8 @@ namespace Assets.Scripts.Player.Camera
         [SerializeField, Min(0)] private float _shakeSprintMultiplier = 2;
         [SerializeField, Min(0)] private float _shakeSmoothTime = 0.05f;
 
-        [Space, Header("References")]
-        [SerializeField] private Transform _cameraTransform;
-
         private MovementContext _movement;
         private ICameraInput _input;
-
-        private Vector3 _baseLocalPosition;
 
         private float _bobTimer;
 
@@ -41,11 +36,6 @@ namespace Assets.Scripts.Player.Camera
         private Vector3 _currentShakeOffset;
         private Vector3 _shakeVelocity;
 
-        private void Awake()
-        {
-            if (_cameraTransform == null) _cameraTransform = transform;
-            _baseLocalPosition = _cameraTransform.localPosition;
-        }
         private void LateUpdate()
         {
             if (_movement == null || _input == null) return;
@@ -54,7 +44,7 @@ namespace Assets.Scripts.Player.Camera
             var tilt = CalculateTilt();
             var shake = CalculateShake();
 
-            _cameraTransform.SetLocalPositionAndRotation(_baseLocalPosition + bob + shake, _cameraTransform.localRotation * tilt);
+            transform.SetLocalPositionAndRotation(bob + shake, tilt);
         }
 
         public void Initialize(ICameraInput input, MovementContext movement)

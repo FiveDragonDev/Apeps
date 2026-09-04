@@ -1,6 +1,7 @@
 using Assets.Scripts.Player.Input.InputContext;
 using Assets.Scripts.Player.Movement.Sensors;
 using Assets.Scripts.Player.Movement.StateMachine;
+using Assets.Scripts.Player.Movement.StateMachine.Implementation;
 using UnityEngine;
 
 namespace Assets.Scripts.Player.Movement
@@ -15,6 +16,7 @@ namespace Assets.Scripts.Player.Movement
 
         [Space, Header("References")]
         [SerializeField] private PlayerMovementSensor _sensor;
+        [SerializeField] private PlayerBody _body;
 
         private IMovementInput _input;
         private MovementMotor _motor;
@@ -37,12 +39,13 @@ namespace Assets.Scripts.Player.Movement
             if (_initialized || _input == null) return;
             _motor = new(GetComponent<Rigidbody>());
 
-            Context = new(_input, _motor, _config, _sensor);
+            Context = new(_input, _motor, _config, _sensor, _body);
 
             _locomotion = new(Context);
 
             _locomotion.RegisterState<GroundedState>();
             _locomotion.RegisterState<AirborneState>();
+            _locomotion.RegisterState<CrouchState>();
             _locomotion.Initialize();
 
             _locomotion.SetInitialState<GroundedState>();
