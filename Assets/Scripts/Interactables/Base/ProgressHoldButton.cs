@@ -38,7 +38,6 @@ namespace Assets.Scripts.Interactables.Base
             {
                 _currentHoldTime = 0;
                 HoldCanceled?.Invoke();
-                RaiseProgressChanged(0);
             }
         }
         protected override void OnUpdateInteraction(float deltaTime)

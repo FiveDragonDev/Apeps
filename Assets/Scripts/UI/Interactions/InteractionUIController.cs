@@ -10,7 +10,7 @@ namespace Assets.Scripts.UI.Interactions
         [SerializeField] private PlayerInteractionController _interaction;
 
         [SerializeField] private InteractionProgressView _progressView;
-        [SerializeField] private InteractionCrosshair _crosshair;
+        [SerializeField] private FadeBehaviour _crosshair;
 
         private IProgressInteractable _progressInteractable;
 
@@ -60,8 +60,8 @@ namespace Assets.Scripts.UI.Interactions
 
             _progressView.transform.position = target.Point + target.Normal * 0.1f;
 
-            _progressView.SetProgress(progress.Progress);
             _progressView.Show();
+            _progressView.SetProgress(progress.Progress);
         }
         private void OnInteractionEnded(InteractionTarget target)
         {
