@@ -19,12 +19,6 @@ namespace Assets.Scripts.Player.Camera
         [SerializeField, Min(0)] private float _turnTiltAngle = 2;
         [SerializeField, Min(0)] private float _tiltSmoothTime = 0.1f;
 
-        [Space, Header("Shake")]
-        [SerializeField, Min(0)] private float _shakeAmplitude = 0.02f;
-        [SerializeField, Min(0)] private float _shakeFrequency = 15;
-        [SerializeField, Min(0)] private float _shakeSprintMultiplier = 2;
-        [SerializeField, Min(0)] private float _shakeSmoothTime = 0.05f;
-
         private MovementContext _movement;
         private ICameraInput _input;
 
@@ -33,18 +27,14 @@ namespace Assets.Scripts.Player.Camera
         private Vector2 _tilt;
         private Vector2 _tiltVelocity;
 
-        private Vector3 _currentShakeOffset;
-        private Vector3 _shakeVelocity;
-
         private void LateUpdate()
         {
             if (_movement == null || _input == null) return;
 
             var bob = CalculateHeadBob();
             var tilt = CalculateTilt();
-            var shake = CalculateShake();
 
-            transform.SetLocalPositionAndRotation(bob + shake, tilt);
+            transform.SetLocalPositionAndRotation(bob, tilt);
         }
 
         public void Initialize(ICameraInput input, MovementContext movement)
@@ -83,23 +73,6 @@ namespace Assets.Scripts.Player.Camera
             _tilt = Vector2.SmoothDamp(_tilt, targetTilt, ref _tiltVelocity, _tiltSmoothTime);
 
             return Quaternion.Euler(_tilt.x, 0, _tilt.y);
-        }
-
-        private Vector3 CalculateShake()
-        {
-            bool shouldShake = _movement.IsSprinting && _movement.IsMoving;
-
-            float multiplier = shouldShake ? _shakeSprintMultiplier : 1;
-            float time = Time.time * _shakeFrequency * multiplier;
-
-            float noiseX = Mathf.PerlinNoise(time, 0) - 0.5f;
-            float noiseY = Mathf.PerlinNoise(0, time) - 0.5f;
-
-            var target = _shakeAmplitude * multiplier * new Vector3(noiseX, noiseY, 0);
-
-            _currentShakeOffset = Vector3.SmoothDamp(_currentShakeOffset, target, ref _shakeVelocity, _shakeSmoothTime);
-
-            return _currentShakeOffset;
         }
     }
 }

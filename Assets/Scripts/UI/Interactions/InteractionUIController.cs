@@ -42,9 +42,9 @@ namespace Assets.Scripts.UI.Interactions
         private void Update()
         {
             if (_progressView.Visible) FaceCamera(_progressView.transform);
-            if (_crosshair.Visible && _interaction.Hovered.HasValue)
+            if (_crosshair.Visible && _interaction.Hovered is { } hovered)
             {
-                _crosshair.transform.position = _interaction.Hovered.Value.Point + _interaction.Hovered.Value.Normal * 0.1f;
+                _crosshair.transform.position = hovered.Point + hovered.Normal * 0.1f;
                 FaceCamera(_crosshair.transform);
             }
         }

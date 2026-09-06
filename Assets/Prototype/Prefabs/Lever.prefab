@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4908714400439946436}
   - component: {fileID: 8396046668058582430}
-  - component: {fileID: 4084288345422068107}
   m_Layer: 0
   m_Name: Lever
   m_TagString: Untagged
@@ -55,29 +54,6 @@ MonoBehaviour:
   _minAngle: 22.5
   _maxAngle: -22.5
   _smoothTime: 0.15
---- !u!136 &4084288345422068107
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2995266935725882283}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.2
-  m_Height: 1.3
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.6, z: 0}
 --- !u!1 &3130049335928877914
 GameObject:
   m_ObjectHideFlags: 0
@@ -89,6 +65,8 @@ GameObject:
   - component: {fileID: 1352891165955505162}
   - component: {fileID: 6632372822490883337}
   - component: {fileID: 1664977464403866667}
+  - component: {fileID: 127674977794960646}
+  - component: {fileID: 1737352419762575776}
   m_Layer: 0
   m_Name: Lever
   m_TagString: Untagged
@@ -168,6 +146,42 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &127674977794960646
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3130049335928877914}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.05
+  m_Height: 1.15
+  m_Direction: 2
+  m_Center: {x: 0, y: 0, z: 0.5}
+--- !u!114 &1737352419762575776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3130049335928877914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7bdbd214885ff746b456df3d9e82215, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Interactables.InteractionProvider
+  _coreInteractable: {fileID: 8396046668058582430}
 --- !u!1 &9059094542456477378
 GameObject:
   m_ObjectHideFlags: 0
