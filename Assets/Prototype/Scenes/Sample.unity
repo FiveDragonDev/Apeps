@@ -432,21 +432,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa18a9a8e544e004eb5b46a796cee9e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.UI.Interactions.InteractionProgressView
-  _alphaSmoothTime: 0.15
+  _alphaSmoothTime: 0.1
   _canvasGroup: {fileID: 525044914}
+  _completeColor: {r: 0, g: 1, b: 0, a: 1}
   _gradientByProgress:
     serializedVersion: 2
-    key0: {r: 1, g: 0.7529412, b: 0, a: 0.8784314}
+    key0: {r: 1, g: 0.6039734, b: 0, a: 0.8784314}
     key1: {r: 1, g: 1, b: 0.1254902, a: 0.8784314}
-    key2: {r: 0, g: 1, b: 0, a: 0}
+    key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 63897
-    ctime2: 65535
+    ctime1: 65535
+    ctime2: 0
     ctime3: 0
     ctime4: 0
     ctime5: 0
@@ -462,7 +463,7 @@ MonoBehaviour:
     atime7: 0
     m_Mode: 0
     m_ColorSpace: 0
-    m_NumColorKeys: 3
+    m_NumColorKeys: 2
     m_NumAlphaKeys: 2
   _progress: {fileID: 122078097}
 --- !u!4 &267428867
@@ -1438,7 +1439,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   _maxInteractionDistance: 2
-  _interactionRadius: 0.4
+  _interactionRadius: 0.1
   _sender: {fileID: 1054419756}
 --- !u!114 &844541449
 MonoBehaviour:

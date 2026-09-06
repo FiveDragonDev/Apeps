@@ -7,8 +7,7 @@ namespace Assets.Scripts.UI
         public bool Visible { get; private set; }
 
         [SerializeField, Min(0)] private float _alphaSmoothTime = 0.1f;
-
-        [Space, SerializeField] private CanvasGroup _canvasGroup;
+        [SerializeField] private CanvasGroup _canvasGroup;
 
         private void Awake() => Hide();
         private void Update()

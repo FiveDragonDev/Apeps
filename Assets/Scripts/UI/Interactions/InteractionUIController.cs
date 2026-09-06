@@ -41,11 +41,19 @@ namespace Assets.Scripts.UI.Interactions
         }
         private void Update()
         {
-            if (_progressView.Visible) FaceCamera(_progressView.transform);
-            if (_crosshair.Visible && _interaction.Hovered is { } hovered)
+            if (_interaction.Hovered is { } hovered)
             {
-                _crosshair.transform.position = hovered.Point + hovered.Normal * 0.1f;
-                FaceCamera(_crosshair.transform);
+                if (_progressView.Visible)
+                {
+                    _progressView.transform.position = hovered.Point + hovered.Normal * 0.1f;
+                    FaceCamera(_progressView.transform);
+                }
+
+                if (_crosshair.Visible)
+                {
+                    _crosshair.transform.position = hovered.Point + hovered.Normal * 0.1f;
+                    FaceCamera(_crosshair.transform);
+                }
             }
         }
 
@@ -57,8 +65,6 @@ namespace Assets.Scripts.UI.Interactions
 
             _progressInteractable = progress;
             _progressInteractable.ProgressChanged += OnProgressChanged;
-
-            _progressView.transform.position = target.Point + target.Normal * 0.1f;
 
             _progressView.Show();
             _progressView.SetProgress(progress.Progress);

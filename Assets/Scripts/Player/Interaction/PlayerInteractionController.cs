@@ -110,7 +110,11 @@ namespace Assets.Scripts.Player.Interaction
                 if (_hovered.HasValue && _hovered.Value.Collider.gameObject == target.Collider.gameObject) return;
 
                 if (!_hovered.HasValue) HoverStarted?.Invoke(target);
-                else HoverChanged?.Invoke(_hovered.Value, target);
+                else
+                {
+                    EndInteraction();
+                    HoverChanged?.Invoke(_hovered.Value, target);
+                }
 
                 _hovered = target;
                 return;
@@ -121,6 +125,7 @@ namespace Assets.Scripts.Player.Interaction
             var previous = _hovered.Value;
             _hovered = null;
 
+            EndInteraction();
             HoverEnded?.Invoke(previous);
         }
 

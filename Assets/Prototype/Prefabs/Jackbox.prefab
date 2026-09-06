@@ -447,8 +447,8 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 15
-      minScalar: 8
+      scalar: 16
+      minScalar: 9
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -889,7 +889,7 @@ ParticleSystem:
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 2
+      scalar: 1.75
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -943,7 +943,7 @@ ParticleSystem:
     serializedVersion: 6
     enabled: 1
     type: 4
-    angle: 15
+    angle: 17.5
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 1
