@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
 {
     public sealed class GroundedState : PlayerMovementState
     {
-        private Vector2 _move;
-        private bool _sprint;
+        public event Action CrouchRequested;
+        public event Action JumpRequested;
+        public event Action Jumped;
 
         private bool _jumpRequested;
         private bool _crouchRequested;
@@ -20,17 +22,15 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
             Context.Input.Jump += OnJump;
             Context.Input.Crouch += OnCrouch;
         }
-        public override void Update(float deltaTime)
-        {
-            _move = Context.Input.Move;
-            _sprint = Context.Input.Sprint;
-        }
         public override void FixedUpdate(float deltaTime)
         {
-            var speed = _sprint ? Context.Config.SprintSpeed : Context.Config.WalkSpeed;
+            var move = Context.Input.Move;
+            var sprint = Context.Input.Sprint;
 
-            Vector3 forward = Context.Motor.Forward * _move.y;
-            Vector3 right = Context.Motor.Right * _move.x;
+            var speed = sprint ? Context.Config.SprintSpeed : Context.Config.WalkSpeed;
+
+            Vector3 forward = Context.Motor.Forward * move.y;
+            Vector3 right = Context.Motor.Right * move.x;
             var direction = Vector3.ClampMagnitude(forward + right, 1);
             var targetHorizontalVelocity = direction * speed;
 
@@ -48,6 +48,7 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
                 var jumpDirection = (Vector3.up + Context.Sensor.GroundNormal).normalized;
                 Context.Motor.AddImpulse(jumpDirection * Context.Config.JumpImpulse);
                 _jumpRequested = false;
+                Jumped?.Invoke();
             }
         }
         public override void Exit()
@@ -57,7 +58,16 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
             _crouchRequested = false;
         }
 
-        private void OnJump() => _jumpRequested = true;
-        private void OnCrouch() => _crouchRequested = true;
+        private void OnJump()
+        {
+            _jumpRequested = true;
+            JumpRequested?.Invoke();
+        }
+
+        private void OnCrouch()
+        {
+            _crouchRequested = true;
+            CrouchRequested?.Invoke();
+        }
     }
 }

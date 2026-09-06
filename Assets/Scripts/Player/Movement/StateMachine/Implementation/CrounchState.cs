@@ -1,17 +1,19 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
 {
     public sealed class CrouchState : PlayerMovementState
     {
-        private Vector2 _move;
+        public event Action StandRequested;
+        public event Action StandCancelled;
 
         private bool _standRequested;
 
         public override void Setup()
         {
             AddTransitionTo<AirborneState>(static ctx => !ctx.IsGrounded);
-            AddTransitionTo<GroundedState>(_ => _standRequested);
+            AddTransitionTo<GroundedState>(_ => _standRequested && Context.Sensor.CanStand);
         }
 
         public override void Enter()
@@ -21,11 +23,20 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
             Context.Input.Jump += RequestStand;
             Context.Input.Crouch += RequestStand;
         }
-        public override void Update(float deltaTime) => _move = Context.Input.Move;
+        public override void Update(float deltaTime)
+        {
+            if (_standRequested && !Context.Sensor.CanStand)
+            {
+                _standRequested = false;
+                StandCancelled?.Invoke();
+            }
+        }
         public override void FixedUpdate(float deltaTime)
         {
-            Vector3 forward = Context.Motor.Forward * _move.y;
-            Vector3 right = Context.Motor.Right * _move.x;
+            var move = Context.Input.Move;
+
+            Vector3 forward = Context.Motor.Forward * move.y;
+            Vector3 right = Context.Motor.Right * move.x;
             var direction = Vector3.ClampMagnitude(forward + right, 1);
             var targetHorizontalVelocity = direction * Context.Config.CrouchSpeed;
 
@@ -47,6 +58,10 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
             Context.Body.SetHeight(Context.Config.StandingHeight);
         }
 
-        private void RequestStand() => _standRequested = true;
+        private void RequestStand()
+        {
+            _standRequested = true;
+            StandRequested?.Invoke();
+        }
     }
 }

@@ -4,15 +4,7 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
 {
     public sealed class AirborneState : PlayerMovementState
     {
-        private Vector2 _move;
-        private bool _sprint;
-
         public override void Setup() => AddTransitionTo<GroundedState>(static ctx => ctx.IsGrounded);
-        public override void Update(float deltaTime)
-        {
-            _move = Context.Input.Move;
-            _sprint = Context.Input.Sprint;
-        }
         public override void FixedUpdate(float deltaTime)
         {
             Vector3 currentVelocity = Context.Motor.Velocity;
@@ -21,10 +13,13 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
             currentVelocity.y = Mathf.Max(currentVelocity.y, -Context.Config.MaxFallSpeed);
             Context.Motor.Velocity = currentVelocity;
 
-            var speed = _sprint ? Context.Config.SprintSpeed : Context.Config.WalkSpeed;
+            var move = Context.Input.Move;
+            var sprint = Context.Input.Sprint;
 
-            Vector3 forward = Context.Motor.Forward * _move.y;
-            Vector3 right = Context.Motor.Right * _move.x;
+            var speed = sprint ? Context.Config.SprintSpeed : Context.Config.WalkSpeed;
+
+            Vector3 forward = Context.Motor.Forward * move.y;
+            Vector3 right = Context.Motor.Right * move.x;
             var direction = Vector3.ClampMagnitude(forward + right, 1);
 
             var targetHorizontalVelocity = Context.Config.AirControl * speed * direction;
