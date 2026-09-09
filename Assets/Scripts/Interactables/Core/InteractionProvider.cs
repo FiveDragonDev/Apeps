@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Assets.Scripts.Interactables
+namespace Assets.Scripts.Interactables.Core
 {
     public sealed class InteractionProvider : MonoBehaviour, IInteractable
     {

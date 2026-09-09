@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.Interactables
+﻿namespace Assets.Scripts.Interactables.Core
 {
     public interface IInteractable
     {

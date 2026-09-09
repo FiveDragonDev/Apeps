@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Interactables.Core;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 

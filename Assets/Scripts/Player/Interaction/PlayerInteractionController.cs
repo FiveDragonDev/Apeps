@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Interactables;
+﻿using Assets.Scripts.Interactables.Core;
 using Assets.Scripts.Player.Input.InputContext;
 using System;
 using UnityEngine;
