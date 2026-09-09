@@ -2,6 +2,7 @@ using Assets.Scripts.Player.Camera;
 using Assets.Scripts.Player.Input;
 using Assets.Scripts.Player.Interaction;
 using Assets.Scripts.Player.Movement;
+using Assets.Scripts.Player.Weapons;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
@@ -15,6 +16,7 @@ namespace Assets.Scripts.Player
         [SerializeField] private PlayerFirstPersonCameraController _cameraController;
         [SerializeField] private PlayerCameraEffectsController _cameraEffectsController;
         [SerializeField] private PlayerInteractionController _interactionController;
+        [SerializeField] private PlayerWeaponController _weaponController;
 
         private void Awake()
         {
@@ -28,7 +30,7 @@ namespace Assets.Scripts.Player
             if (_cameraController != null) _cameraController.Initialize(_inputHandler.Camera);
             if (_cameraEffectsController != null && _movementController != null) _cameraEffectsController.Initialize(_inputHandler.Camera, _movementController.Context);
             if (_interactionController != null) _interactionController.Initialize(_inputHandler.Interaction);
-            // etc.
+            if (_weaponController != null) _weaponController.Initialize(_inputHandler.Weapon);
         }
     }
 }

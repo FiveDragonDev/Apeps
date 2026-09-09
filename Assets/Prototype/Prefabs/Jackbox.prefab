@@ -137,13 +137,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f051cac4171d634fba903aebad746f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Interactables.Implementation.Jackbox
-  PressedStateChanged:
+  _pressedStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  ProgressUpdated:
+  _progressChanged:
     m_PersistentCalls:
       m_Calls: []
-  HoldCompleted:
+  _holdCompleted:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6187986730441928816}
@@ -158,7 +158,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  HoldCanceled:
+  _holdCanceled:
     m_PersistentCalls:
       m_Calls: []
   _requiredHoldTime: 2

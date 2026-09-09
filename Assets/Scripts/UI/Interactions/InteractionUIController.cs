@@ -41,14 +41,17 @@ namespace Assets.Scripts.UI.Interactions
         }
         private void Update()
         {
-            if (_interaction.Hovered is { } hovered)
+            if (_interaction.Active is { } active)
             {
                 if (_progressView.Visible)
                 {
-                    _progressView.transform.position = hovered.Point + hovered.Normal * 0.1f;
+                    _progressView.transform.position = active.Point + active.Normal * 0.1f;
                     FaceCamera(_progressView.transform);
                 }
+            }
 
+            if (_interaction.Hovered is { } hovered)
+            {
                 if (_crosshair.Visible)
                 {
                     _crosshair.transform.position = hovered.Point + hovered.Normal * 0.1f;

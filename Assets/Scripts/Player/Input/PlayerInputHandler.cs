@@ -10,15 +10,18 @@ namespace Assets.Scripts.Player.Input
         public IMovementInput Movement => _movement;
         public ICameraInput Camera => _camera;
         public IInteractionInput Interaction => _interaction;
+        public IWeaponInput Weapon => _weapon;
 
         [Header("Input Actions")]
         [SerializeField] private MovementActions _movementActions = new();
         [Space, SerializeField] private CameraActions _cameraActions = new();
         [Space, SerializeField] private InteractionActions _interactionActions = new();
+        [Space, SerializeField] private WeaponActions _weaponActions = new();
 
         private readonly MovementInput _movement = new();
         private readonly CameraInput _camera = new();
         private readonly InteractionInput _interaction = new();
+        private readonly WeaponInput _weapon = new();
 
         private InputValueBinding<Vector2> _move;
         private InputHoldBinding _sprint;
@@ -26,6 +29,7 @@ namespace Assets.Scripts.Player.Input
         private InputPressBinding _crouch;
         private InputValueBinding<Vector2> _look;
         private InputHoldBinding _interact;
+        private InputHoldBinding _fire;
 
         private void Awake()
         {
@@ -37,6 +41,8 @@ namespace Assets.Scripts.Player.Input
             _look = new(_cameraActions.Look, _camera.SetLook, Vector2.zero);
 
             _interact = new(_interactionActions.Interact, _interaction.RaiseInteract);
+
+            _fire = new(_weaponActions.Fire, _weapon.RaiseFire);
         }
         private void OnEnable()
         {
@@ -48,6 +54,8 @@ namespace Assets.Scripts.Player.Input
             _look?.Enable();
 
             _interact?.Enable();
+
+            _fire?.Enable();
         }
         private void OnDisable()
         {
@@ -59,6 +67,8 @@ namespace Assets.Scripts.Player.Input
             _look?.Disable();
 
             _interact?.Disable();
+
+            _fire?.Disable();
         }
     }
 }
