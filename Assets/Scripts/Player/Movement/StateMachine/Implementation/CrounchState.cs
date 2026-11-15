@@ -44,7 +44,7 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
             if (groundNormal.y > 0.001f)
             {
                 float verticalVelocity = -Vector3.Dot(targetHorizontalVelocity, groundNormal) / groundNormal.y;
-                var targetVelocity = targetHorizontalVelocity + Vector3.up * verticalVelocity;
+                var targetVelocity = targetHorizontalVelocity + Vector3.up * verticalVelocity + Context.Sensor.PlatformVelocity;
                 Context.Motor.Accelerate(targetVelocity, Context.Config.GroundedAcceleration, deltaTime);
             }
             else Context.Motor.AccelerateHorizontal(targetHorizontalVelocity, Context.Config.GroundedAcceleration, deltaTime);

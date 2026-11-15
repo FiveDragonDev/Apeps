@@ -6,6 +6,7 @@ namespace Assets.Scripts.Player.Movement.Sensors
     {
         public bool HasObstacle { get; private set; }
         public Vector3 ObstacleNormal { get; private set; }
+        public Collider HitCollider { get; private set; }
 
         [Header("Settings")]
         [SerializeField] private LayerMask _obstacleMask = ~0;
@@ -30,11 +31,13 @@ namespace Assets.Scripts.Player.Movement.Sensors
             {
                 HasObstacle = true;
                 ObstacleNormal = hit.normal;
+                HitCollider = hit.collider;
             }
             else
             {
                 HasObstacle = false;
                 ObstacleNormal = -direction;
+                HitCollider = null;
             }
         }
     }
