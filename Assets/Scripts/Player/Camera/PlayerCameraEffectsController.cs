@@ -22,6 +22,7 @@ namespace Assets.Scripts.Player.Camera
         private MovementContext _movement;
         private ICameraInput _input;
 
+        private Vector3 _headbob;
         private float _bobTimer;
 
         private Vector2 _tilt;
@@ -45,7 +46,7 @@ namespace Assets.Scripts.Player.Camera
 
         private Vector3 CalculateHeadBob()
         {
-            if (!_movement.IsGrounded || !_movement.IsMoving) return Vector3.zero;
+            if (!_movement.IsGrounded || !_movement.IsMoving) return _headbob;
 
             float speed = _movement.CurrentSpeed;
 
@@ -61,8 +62,9 @@ namespace Assets.Scripts.Player.Camera
             }
 
             _bobTimer += Time.deltaTime * bobSpeed * speedRatio;
+            _headbob = new(Mathf.Cos(_bobTimer) * amount.x, Mathf.Sin(_bobTimer * 2) * amount.y, 0);
 
-            return new(Mathf.Cos(_bobTimer) * amount.x, Mathf.Sin(_bobTimer * 2) * amount.y, 0);
+            return _headbob;
         }
 
         private Quaternion CalculateTilt()

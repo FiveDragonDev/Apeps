@@ -22,8 +22,6 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
             Vector3 right = Context.Motor.Right * move.x;
             var direction = Vector3.ClampMagnitude(forward + right, 1);
 
-            var targetHorizontalVelocity = Context.Config.AirControl * speed * direction;
-
             if (Context.Sensor.IsOnTooSteepSlope(Context.Config.SlopeAngle))
             {
                 Vector3 slideDirection = Vector3.ProjectOnPlane(Vector3.down, Context.Sensor.GroundNormal).normalized;
@@ -35,8 +33,10 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
                 return;
             }
 
+            var horizontalAcceleration = Context.Config.AirControl * speed * direction;
             float airAcceleration = Context.Config.AirControl * Context.Config.AirAcceleration;
-            Context.Motor.AccelerateHorizontal(targetHorizontalVelocity, airAcceleration, deltaTime);
+
+            Context.Motor.AccelerateHorizontal(Context.Motor.HorizontalVelocity + horizontalAcceleration * deltaTime, airAcceleration, deltaTime);
         }
     }
 }
