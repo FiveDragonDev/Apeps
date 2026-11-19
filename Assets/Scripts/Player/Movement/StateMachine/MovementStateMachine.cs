@@ -60,7 +60,12 @@ namespace Assets.Scripts.Player.Movement.StateMachine
                 break;
             }
         }
-        public void FixedUpdate(float dt) => CurrentState?.FixedUpdate(dt);
+        public void FixedUpdate(float dt)
+        {
+            Context?.Motor.ReadFromRigidbody();
+            CurrentState?.FixedUpdate(dt);
+            Context?.Motor.ApplyToRigidbody();
+        }
 
         private void ChangeTo(PlayerMovementState next)
         {

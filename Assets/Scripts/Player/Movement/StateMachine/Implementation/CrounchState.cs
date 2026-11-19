@@ -39,15 +39,15 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
             Vector3 right = Context.Motor.Right * move.x;
             var direction = Vector3.ClampMagnitude(forward + right, 1);
             var targetHorizontalVelocity = direction * Context.Config.CrouchSpeed;
+            Context.Motor.AccelerateHorizontalMovement(targetHorizontalVelocity, Context.Config.GroundedAcceleration, deltaTime);
 
             var groundNormal = Context.Sensor.GroundNormal;
             if (groundNormal.y > 0.001f)
             {
                 float verticalVelocity = -Vector3.Dot(targetHorizontalVelocity, groundNormal) / groundNormal.y;
-                var targetVelocity = targetHorizontalVelocity + Vector3.up * verticalVelocity + Context.Sensor.PlatformVelocity;
+                var targetVelocity = Vector3.up * verticalVelocity + Context.Sensor.PlatformVelocity;
                 Context.Motor.Accelerate(targetVelocity, Context.Config.GroundedAcceleration, deltaTime);
             }
-            else Context.Motor.AccelerateHorizontal(targetHorizontalVelocity, Context.Config.GroundedAcceleration, deltaTime);
         }
         public override void Exit()
         {

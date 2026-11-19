@@ -8,9 +8,12 @@ namespace Assets.Scripts.Player.Movement
     {
         public bool IsGrounded => Sensor.IsOnSurface && !Sensor.IsOnTooSteepSlope(Config.SlopeAngle);
         public bool IsSprinting => Input.Sprint;
-        public Vector3 HorizontalVelocity => Motor.HorizontalVelocity;
-        public float CurrentSpeed => HorizontalVelocity.magnitude;
-        public bool IsMoving => HorizontalVelocity.sqrMagnitude > 0.01f;
+        
+        public Vector3 HorizontalVelocity => Motor.FullHorizontalVelocity;
+        public Vector3 HorizontalMovement => Motor.HorizontalMovement;
+
+        public float CurrentMovementSpeed => HorizontalMovement.magnitude;
+        public bool IsWalking => HorizontalMovement.sqrMagnitude > 0.01f;
         public float MaxSpeed => Mathf.Max(Config.WalkSpeed, Config.SprintSpeed);
 
         public IMovementInput Input { get; }

@@ -46,9 +46,9 @@ namespace Assets.Scripts.Player.Camera
 
         private Vector3 CalculateHeadBob()
         {
-            if (!_movement.IsGrounded || !_movement.IsMoving) return _headbob;
+            if (!_movement.IsGrounded || !_movement.IsWalking) return _headbob;
 
-            float speed = _movement.CurrentSpeed;
+            float speed = _movement.CurrentMovementSpeed;
 
             float speedRatio = Mathf.Clamp01(speed / Mathf.Max(_movement.Config.SprintSpeed, 0.001f));
 

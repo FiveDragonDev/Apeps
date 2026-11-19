@@ -7,15 +7,13 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
         public override void Setup() => AddTransitionTo<GroundedState>(static ctx => ctx.IsGrounded);
         public override void FixedUpdate(float deltaTime)
         {
-            Vector3 currentVelocity = Context.Motor.Velocity;
+            Vector3 currentVelocity = Context.Motor.Velocity; // только физическая скорость
             currentVelocity.y += Context.Config.Gravity * deltaTime;
-
             currentVelocity.y = Mathf.Max(currentVelocity.y, -Context.Config.MaxFallSpeed);
             Context.Motor.Velocity = currentVelocity;
 
             var move = Context.Input.Move;
             var sprint = Context.Input.Sprint;
-
             var speed = sprint ? Context.Config.SprintSpeed : Context.Config.WalkSpeed;
 
             Vector3 forward = Context.Motor.Forward * move.y;
@@ -27,16 +25,16 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
                 Vector3 slideDirection = Vector3.ProjectOnPlane(Vector3.down, Context.Sensor.GroundNormal).normalized;
                 Vector3 slideTarget = slideDirection * Context.Config.SlideSpeed;
 
-                var currentHorizontal = Context.Motor.HorizontalVelocity;
+                var currentHorizontal = Context.Motor.HorizontalMovement;
                 var newHorizontal = Vector3.MoveTowards(currentHorizontal, slideTarget, Context.Config.SlideAcceleration * deltaTime);
-                Context.Motor.HorizontalVelocity = newHorizontal;
+                Context.Motor.HorizontalMovement = newHorizontal;
                 return;
             }
 
             var horizontalAcceleration = Context.Config.AirControl * speed * direction;
             float airAcceleration = Context.Config.AirControl * Context.Config.AirAcceleration;
 
-            Context.Motor.AccelerateHorizontal(Context.Motor.HorizontalVelocity + horizontalAcceleration * deltaTime, airAcceleration, deltaTime);
+            Context.Motor.AccelerateHorizontalMovement(Context.Motor.HorizontalMovement + horizontalAcceleration * deltaTime, airAcceleration, deltaTime);
         }
     }
 }
