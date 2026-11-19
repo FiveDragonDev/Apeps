@@ -16,25 +16,27 @@ namespace Assets.Scripts.Player.Movement.StateMachine.Implementation
             var sprint = Context.Input.Sprint;
             var speed = sprint ? Context.Config.SprintSpeed : Context.Config.WalkSpeed;
 
-            Vector3 forward = Context.Motor.Forward * move.y;
-            Vector3 right = Context.Motor.Right * move.x;
-            var direction = Vector3.ClampMagnitude(forward + right, 1);
-
+            var currentHorizontal = Context.Motor.HorizontalMovement;
             if (Context.Sensor.IsOnTooSteepSlope(Context.Config.SlopeAngle))
             {
                 Vector3 slideDirection = Vector3.ProjectOnPlane(Vector3.down, Context.Sensor.GroundNormal).normalized;
                 Vector3 slideTarget = slideDirection * Context.Config.SlideSpeed;
 
-                var currentHorizontal = Context.Motor.HorizontalMovement;
                 var newHorizontal = Vector3.MoveTowards(currentHorizontal, slideTarget, Context.Config.SlideAcceleration * deltaTime);
                 Context.Motor.HorizontalMovement = newHorizontal;
                 return;
             }
 
+            Vector3 forward = Context.Motor.Forward * move.y;
+            Vector3 right = Context.Motor.Right * move.x;
+            var direction = Vector3.ClampMagnitude(forward + right, 1);
+
             var horizontalAcceleration = Context.Config.AirControl * speed * direction;
             float airAcceleration = Context.Config.AirControl * Context.Config.AirAcceleration;
 
-            Context.Motor.AccelerateHorizontalMovement(Context.Motor.HorizontalMovement + horizontalAcceleration * deltaTime, airAcceleration, deltaTime);
+            var targetHorizontalVelocity = Vector3.ClampMagnitude(currentHorizontal + horizontalAcceleration * deltaTime, currentHorizontal.magnitude);
+
+            Context.Motor.AccelerateHorizontalMovement(targetHorizontalVelocity, airAcceleration, deltaTime);
         }
     }
 }
