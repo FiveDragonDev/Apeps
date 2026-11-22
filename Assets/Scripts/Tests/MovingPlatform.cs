@@ -84,7 +84,7 @@ namespace Assets.Scripts.Tests
         {
             if (_totalLength <= 0 || _path.Count == 0) return transform.position;
 
-            dist = _loop ? Mathf.Repeat(dist, _totalLength) : Mathf.Clamp(dist, 0, _totalLength);
+            dist = _effectiveLoop ? Mathf.Repeat(dist, _totalLength) : Mathf.Clamp(dist, 0, _totalLength);
 
             int lo = 0, hi = _path.Count - 1;
             while (hi - lo > 1)

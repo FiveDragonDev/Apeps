@@ -618,7 +618,7 @@ GameObject:
   m_Component:
   - component: {fileID: 293686420}
   m_Layer: 0
-  m_Name: Moving Platform
+  m_Name: Moving Platform Path
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -639,7 +639,7 @@ Transform:
   m_Children:
   - {fileID: 1413877364}
   - {fileID: 1245796155}
-  - {fileID: 3032200254931583406}
+  - {fileID: 929835642}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &323796923
@@ -1789,6 +1789,72 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Player.Weapons.PlayerWeaponController
   _currentGun: {fileID: 328287512}
+--- !u!1 &929835641
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 929835642}
+  - component: {fileID: 929835644}
+  - component: {fileID: 929835643}
+  m_Layer: 0
+  m_Name: Platform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &929835642
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929835641}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3032200254931583406}
+  m_Father: {fileID: 293686420}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &929835643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929835641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0fc4255d3217a47b074742beb44691, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.VelocityTracker
+--- !u!114 &929835644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929835641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be0461fcfb490824fbb6f5f6699f5fb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Tests.MovingPlatform
+  _waypoints:
+  - {fileID: 1413877364}
+  - {fileID: 1245796155}
+  _loop: 1
+  _cornerRadius: 0.2
+  _cornerSubdivisions: 15
+  _maxSpeed: 3
+  _acceleration: 2
 --- !u!65 &984559284
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13069,11 +13135,9 @@ GameObject:
   - component: {fileID: 3032200254931583406}
   - component: {fileID: 5550546781960515143}
   - component: {fileID: 1320930757582202458}
-  - component: {fileID: 5550546781960515144}
-  - component: {fileID: 5550546781960515146}
   - component: {fileID: 5550546781960515145}
   m_Layer: 0
-  m_Name: Platform
+  m_Name: Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13439,7 +13503,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 293686420}
+  m_Father: {fileID: 929835642}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 90}
 --- !u!33 &3260616448321196061
 MeshFilter:
@@ -13685,26 +13749,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1156670939027669106}
   m_Mesh: {fileID: -1550514412580984892, guid: c1a26ee482aa9db41a00e38c264cc3a7, type: 3}
---- !u!114 &5550546781960515144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156670939027669106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be0461fcfb490824fbb6f5f6699f5fb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Tests.MovingPlatform
-  _waypoints:
-  - {fileID: 1413877364}
-  - {fileID: 1245796155}
-  _loop: 1
-  _cornerRadius: 0.2
-  _cornerSubdivisions: 15
-  _maxSpeed: 3
-  _acceleration: 2
 --- !u!65 &5550546781960515145
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13726,18 +13770,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 3, z: 0.5}
   m_Center: {x: 0, y: 0, z: -0.25}
---- !u!114 &5550546781960515146
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156670939027669106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e0fc4255d3217a47b074742beb44691, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.VelocityTracker
 --- !u!4 &5811517545346409998
 Transform:
   m_ObjectHideFlags: 0
