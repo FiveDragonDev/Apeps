@@ -6,18 +6,18 @@ namespace Assets.Scripts.Damageable
 {
     public sealed class Target : MonoBehaviour, IDamageable
     {
-        public event Action<float> DamageTaken;
+        public event Action<TakenDamage> DamageTaken;
 
-        [SerializeField] private UnityEvent<float> _damageTaken;
+        [SerializeField] private UnityEvent<TakenDamage> _damageTaken;
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(Damage damage)
         {
-            if (damage <= 0) return;
+            if (damage.KineticEnergy <= Mathf.Epsilon) return;
 
-            RaiseDamageEvent(damage);
+            RaiseDamageEvent(new(damage.HitType, damage.KineticEnergy));
         }
 
-        private void RaiseDamageEvent(float damage)
+        private void RaiseDamageEvent(TakenDamage damage)
         {
             DamageTaken?.Invoke(damage);
             _damageTaken?.Invoke(damage);

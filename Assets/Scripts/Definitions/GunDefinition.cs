@@ -10,6 +10,6 @@ namespace Assets.Scripts.Definitions
 
         [field: SerializeField, Min(0.01f)] public float FireRate { get; private set; } = 1;
         [field: SerializeField, Min(0)] public float FireRange { get; private set; } = 1;
-        [field: SerializeField, Min(0)] public float Damage { get; private set; } = 1;
+        [field: SerializeField, Min(0)] public float KineticEnergy { get; private set; } = 1; // J, test-only!!! (i hope)
     }
 }

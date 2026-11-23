@@ -4,8 +4,8 @@ namespace Assets.Scripts.Damageable
 {
     public interface IDamageable
     {
-        event Action<float> DamageTaken;
+        event Action<TakenDamage> DamageTaken;
 
-        void TakeDamage(float damage);
+        void TakeDamage(Damage damage);
     }
 }

@@ -110,7 +110,8 @@ namespace Assets.Scripts.Weapons.Base
         {
             if (Physics.Raycast(_firepoint.position, _firepoint.forward, out var hit, Definition.FireRange))
             {
-                if (hit.collider.TryGetComponent(out IDamageable damageable)) damageable.TakeDamage(Definition.Damage);
+                if (hit.collider.TryGetComponent(out IDamageable damageable))
+                    damageable.TakeDamage(new(HitType.Penetrating, Vector3.forward, Definition.KineticEnergy, 1));
 
                 Hit?.Invoke(new(ammo, hit.point, hit.normal, hit.collider));
             }
