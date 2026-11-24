@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Assets.Scripts.Damageable
 {
-    [Flags]
-    public enum HitType
+    // [Flags]
+    public enum HitType : byte
     {
         None = 0,
         Sharp = 1,

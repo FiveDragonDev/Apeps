@@ -16,4 +16,6 @@ MonoBehaviour:
   <Thickness>k__BackingField: 1
   <TensileStrength>k__BackingField: 1
   _damageModifiers:
-    _elements: []
+    _entries:
+    - Key: 8
+      Value: 0

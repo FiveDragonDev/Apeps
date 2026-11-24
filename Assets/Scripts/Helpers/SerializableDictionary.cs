@@ -1,53 +1,134 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.Helpers
 {
     [Serializable]
-    public struct SerializableKeyValuePair<TKey, TValue>
+    public class SerializableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, ISerializationCallbackReceiver
     {
-        [field: SerializeField] public TKey Key { get; private set; }
-        [field: SerializeField] public TValue Value { get; private set; }
-
-        public SerializableKeyValuePair(TKey key, TValue value)
+        [Serializable]
+        private struct Entry
         {
-            Key = key;
-            Value = value;
+            public TKey Key;
+            public TValue Value;
         }
 
-        public static implicit operator KeyValuePair<TKey, TValue>(SerializableKeyValuePair<TKey, TValue> kvp) => new(kvp.Key, kvp.Value);
-        public static implicit operator SerializableKeyValuePair<TKey, TValue>(KeyValuePair<TKey, TValue> kvp) => new(kvp.Key, kvp.Value);
-    }
-
-    [Serializable]
-    public sealed class SerializableDictionary<TKey, TValue>
-    {
-        [SerializeField] private SerializableKeyValuePair<TKey, TValue>[] _elements;
-
-        public SerializableDictionary(IEnumerable<SerializableKeyValuePair<TKey, TValue>> kvps) => _elements = kvps.ToArray();
-
-        public static implicit operator SerializableDictionary<TKey, TValue>(SerializableKeyValuePair<TKey, TValue>[] kvps) => new(kvps);
-        public static implicit operator SerializableKeyValuePair<TKey, TValue>[](SerializableDictionary<TKey, TValue> dictionary) => dictionary._elements;
-
-        public static implicit operator SerializableDictionary<TKey, TValue>(Dictionary<TKey, TValue> dictionary)
+        public TValue this[TKey key]
         {
-            List<SerializableKeyValuePair<TKey, TValue>> pairs = new(dictionary.Count);
-            foreach (var (key, value) in dictionary)
+            get => Dictionary[key];
+            set
             {
-                pairs.Add(new(key, value));
+                Dictionary[key] = value;
+
+                int index = FindIndex(key);
+
+                if (index >= 0)
+                {
+                    var entry = _entries[index];
+                    entry.Value = value;
+                    _entries[index] = entry;
+                }
+                else
+                {
+                    _entries.Add(new()
+                    {
+                        Key = key,
+                        Value = value
+                    });
+                }
             }
-            return new(pairs);
         }
-        public static implicit operator Dictionary<TKey, TValue>(SerializableDictionary<TKey, TValue> dictionary)
+
+        public ICollection<TKey> Keys => Dictionary.Keys;
+        public ICollection<TValue> Values => Dictionary.Values;
+
+        public int Count => Dictionary.Count;
+        public bool IsReadOnly => false;
+
+        [SerializeField] private List<Entry> _entries = new();
+
+        private Dictionary<TKey, TValue> Dictionary
         {
-            var pairs = new KeyValuePair<TKey, TValue>[dictionary._elements.Length];
-            for (int i = 0; i < dictionary._elements.Length; i++)
+            get
             {
-                pairs[i] = dictionary._elements[i];
+                if (_dictionary == null)
+                {
+                    _dictionary = new();
+                    _entries ??= new();
+
+                    foreach (var entry in _entries)
+                    {
+                        if (entry.Key is not null)
+                            _dictionary[entry.Key] = entry.Value;
+                    }
+                }
+
+                return _dictionary;
             }
-            return new(pairs);
         }
+
+        [NonSerialized] private Dictionary<TKey, TValue> _dictionary;
+
+        public void Add(TKey key, TValue value)
+        {
+            Dictionary.Add(key, value);
+            _entries.Add(new()
+            {
+                Key = key,
+                Value = value
+            });
+        }
+
+        public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
+
+        public bool Remove(TKey key)
+        {
+            if (!Dictionary.Remove(key)) return false;
+
+            int index = FindIndex(key);
+            if (index >= 0) _entries.RemoveAt(index);
+
+            return true;
+        }
+
+        public bool Remove(KeyValuePair<TKey, TValue> item)
+        {
+            if (!Contains(item)) return false;
+            return Remove(item.Key);
+        }
+
+        public bool ContainsKey(TKey key) => Dictionary.ContainsKey(key);
+        public bool Contains(KeyValuePair<TKey, TValue> item) => ((IDictionary<TKey, TValue>)Dictionary).Contains(item);
+
+        public bool TryGetValue(TKey key, out TValue value) => Dictionary.TryGetValue(key, out value);
+
+        public void Clear()
+        {
+            Dictionary.Clear();
+            _entries.Clear();
+        }
+
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) =>
+            ((IDictionary<TKey, TValue>)Dictionary).CopyTo(array, arrayIndex);
+
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => Dictionary.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        private int FindIndex(TKey key)
+        {
+            var comparer = EqualityComparer<TKey>.Default;
+
+            for (int i = 0; i < _entries.Count; i++)
+            {
+                if (comparer.Equals(_entries[i].Key, key)) return i;
+            }
+
+            return -1;
+        }
+
+        public void OnBeforeSerialize() { }
+        public void OnAfterDeserialize() => _dictionary = null;
     }
 }
